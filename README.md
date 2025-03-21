@@ -18,22 +18,16 @@ This project is an Order Taking and Fulfilment API implemented using Spring Boot
     git clone <repository-url>
     cd <repository-directory>
     ```
-
-2. Build the project:
+2. Build and run the project:
     ```sh
-    ./gradlew build
+    ./scripts/run.sh
     ```
 
-3. Run the application:
-    ```sh
-    ./gradlew bootRun
-    ```
-
-4. To run the tests:
+3. To run the tests:
     ```sh
     ./gradlew test
     ```
 
-5. For integration tests, use the provided Postman collection in the `scripts` folder.
+4. For integration tests, use the provided Postman collection in the `scripts` folder.
 
 Refer to the `HELP.md` file for detailed instructions on setting up and running the project.
