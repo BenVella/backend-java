@@ -25,7 +25,7 @@ This project is an Order Taking and Fulfilment API implemented using Spring Boot
 
 3. To run the tests:
     ```sh
-    ./gradlew test
+    ./scripts/test.sh
     ```
 
 4. For integration tests, use the provided Postman collection in the `scripts` folder.
