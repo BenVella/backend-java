@@ -1,7 +1,7 @@
-package com.melita.order.controller;
+package com.backend.order.controller;
 
-import com.melita.order.service.OrderService;
-import com.melita.order.model.Order;
+import com.backend.order.service.OrderService;
+import com.backend.order.model.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

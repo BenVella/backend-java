@@ -1,4 +1,4 @@
-package com.melita.order;
+package com.backend.order;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
