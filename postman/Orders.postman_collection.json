@@ -1,0 +1,158 @@
+{
+	"info": {
+		"_postman_id": "8facaa85-3281-4778-b536-54dd339bffe1",
+		"name": "Orders",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3837818"
+	},
+	"item": [
+		{
+			"name": "api/auth/signup",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"newuser\",\r\n    \"password\": \"securepassword\",\r\n    \"email\": \"newuser@example.com\",\r\n    \"roles\": [\"ROLE_USER\"]\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/auth/signup",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"auth",
+						"signup"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "api/auth/signin",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Parse the JSON response\r",
+							"let responseData = pm.response.json();\r",
+							"\r",
+							"// Check if the accessToken exists in the response\r",
+							"if (responseData.accessToken) {\r",
+							"    // Store the accessToken in the Postman collection variable\r",
+							"    pm.collectionVariables.set(\"accessToken\", responseData.accessToken);\r",
+							"    console.log(\"Access token stored in collection variable: \" + responseData.accessToken);\r",
+							"} else {\r",
+							"    console.log(\"Access token not found in the response.\");\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "securepassword",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "newuser",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/auth/signin",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"auth",
+						"signin"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "api/orders",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{accessToken}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"orderId\": 1234,\r\n    \"customerId\": 4567,\r\n    \"orderDate\": \"2023-10-31\",\r\n    \"items\": [\r\n        {\r\n            \"productId\": 1001,\r\n            \"quantity\": 2,\r\n            \"unitPrice\": 25.5\r\n        },\r\n        {\r\n            \"productId\": 2002,\r\n            \"quantity\": 1,\r\n            \"unitPrice\": 50.0\r\n        }\r\n    ],\r\n    \"totalAmount\": 101.0\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/orders",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"orders"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "accessToken",
+			"value": ""
+		},
+		{
+			"key": "password",
+			"value": "securepassword"
+		},
+		{
+			"key": "username",
+			"value": "newuser"
+		}
+	]
+}
