@@ -1,14 +1,14 @@
 ﻿#Build stage
-FROM gradle:latest AS BUILD
-WORKDIR /app/
-COPY . .
-RUN gradle build
-
-# Package stage
-FROM openjdk:latest
-ENV JAR_NAME=orders-app.jar
+FROM gradle:latest AS build
 ENV APP_HOME=/app/
 WORKDIR $APP_HOME
-COPY --from=BUILD $APP_HOME .
+COPY . .
+RUN chmod +x $APP_HOME/scripts/build.sh
+
+# Package stage
+FROM eclipse-temurin:21-jre
+ENV APP_HOME=/app/
+WORKDIR $APP_HOME
+COPY --from=build /app/build/libs/order-taking-api-0.0.1-SNAPSHOT.jar .
 EXPOSE 8080
-ENTRYPOINT exec java -jar $APP_HOME/build/libs/$JAR_NAME
+ENTRYPOINT ["java", "-jar", "/app/order-taking-api-0.0.1-SNAPSHOT.jar"]

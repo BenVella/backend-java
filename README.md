@@ -4,27 +4,32 @@
 
 This project is an Order Taking and Fulfilment API implemented using Spring Boot. It provides functionalities for accepting, validating, and processing orders, as well as order approval and fulfilment.
 
+## Features and notes
+
+- Using [BezKoder Spring Security with PSQL](https://github.com/bezkoder/spring-boot-security-postgresql) authentication
+  - Sign-in was modified from original to use header based, basic auth
+- Gradle build with docker
+- Docker with compose up (todo)
+  - To include a postgres container for development
+- orders api requests to rabbitMq or kafka (todo)
+- 
+
 ## Requirements
 
-- Java 11 or higher
-- Gradle
-- Docker (for running RabbitMQ/Kafka if needed)
-- An SMTP server for sending emails
+- Java 17 or higher
+- Docker
 
 ## Getting Started
 
-1. Clone the repository
-
-2. Build and run the project:
+1. Clone the repository and navigate to its dir
+2. Build docker image
     ```sh
-    ./scripts/run.sh
+    docker build -t orders-app:1.0 .
     ```
 
-3. To run the tests:
+3. Run
     ```sh
-    ./scripts/test.sh
+   docker run -d -p 8080:8080 orders-app:1.0
     ```
 
-4. For integration tests, use the provided Postman collection in the `scripts` folder.
-
-Refer to the `HELP.md` file for detailed instructions on setting up and running the project.
+4. Import provided postman collection to sign up, sign in with a 1 hr access token and make requests
