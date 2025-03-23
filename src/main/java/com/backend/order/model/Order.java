@@ -1,4 +1,4 @@
-package com.melita.order.model;
+package com.backend.order.model;
 
 public class Order {
     private Long id;

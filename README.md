@@ -13,11 +13,8 @@ This project is an Order Taking and Fulfilment API implemented using Spring Boot
 
 ## Getting Started
 
-1. Clone the repository:
-    ```sh
-    git clone <repository-url>
-    cd <repository-directory>
-    ```
+1. Clone the repository
+
 2. Build and run the project:
     ```sh
     ./scripts/run.sh
