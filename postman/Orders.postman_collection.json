@@ -10,7 +10,19 @@
 			"name": "api/auth/signup",
 			"request": {
 				"auth": {
-					"type": "noauth"
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "123",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "postgres",
+							"type": "string"
+						}
+					]
 				},
 				"method": "POST",
 				"header": [
@@ -37,7 +49,100 @@
 					]
 				}
 			},
-			"response": []
+			"response": [
+				{
+					"name": "http://localhost:8080/auth/signup",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\": \"newuser2\",\r\n    \"password\": \"securepassword\",\r\n    \"email\": \"newuser2@example.com\",\r\n    \"roles\": [\"ROLE_USER\"]\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/auth/signup",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Method"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Headers"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "0"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, no-store, max-age=0, must-revalidate"
+						},
+						{
+							"key": "Pragma",
+							"value": "no-cache"
+						},
+						{
+							"key": "Expires",
+							"value": "0"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 23 Mar 2025 16:09:10 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"message\": \"User registered successfully!\"\n}"
+				}
+			]
 		},
 		{
 			"name": "api/auth/signin",
@@ -68,13 +173,13 @@
 					"type": "basic",
 					"basic": [
 						{
-							"key": "password",
-							"value": "securepassword",
+							"key": "username",
+							"value": "{{username}}",
 							"type": "string"
 						},
 						{
-							"key": "username",
-							"value": "newuser",
+							"key": "password",
+							"value": "{{password}}",
 							"type": "string"
 						}
 					]
@@ -104,7 +209,100 @@
 					]
 				}
 			},
-			"response": []
+			"response": [
+				{
+					"name": "api/auth/signin",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/auth/signin",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"auth",
+								"signin"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Vary",
+							"value": "Origin"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Method"
+						},
+						{
+							"key": "Vary",
+							"value": "Access-Control-Request-Headers"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "0"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, no-store, max-age=0, must-revalidate"
+						},
+						{
+							"key": "Pragma",
+							"value": "no-cache"
+						},
+						{
+							"key": "Expires",
+							"value": "0"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Transfer-Encoding",
+							"value": "chunked"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 23 Mar 2025 16:04:55 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"accessToken\": \"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuZXd1c2VyIiwiaWF0IjoxNzQyNzQ1ODk1LCJleHAiOjE3NDI4MzIyOTV9.3FwHDpQxWWgxvdHvF5y95szcviipmpMovjFTbgCUm4U\",\n    \"id\": 2,\n    \"username\": \"newuser\",\n    \"email\": \"newuser@example.com\",\n    \"roles\": [\n        \"ROLE_USER\"\n    ],\n    \"tokenType\": \"Bearer\"\n}"
+				}
+			]
 		},
 		{
 			"name": "api/orders",
@@ -120,7 +318,13 @@
 					]
 				},
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "raw",
 					"raw": "{\r\n    \"orderId\": 1234,\r\n    \"customerId\": 4567,\r\n    \"orderDate\": \"2023-10-31\",\r\n    \"items\": [\r\n        {\r\n            \"productId\": 1001,\r\n            \"quantity\": 2,\r\n            \"unitPrice\": 25.5\r\n        },\r\n        {\r\n            \"productId\": 2002,\r\n            \"quantity\": 1,\r\n            \"unitPrice\": 50.0\r\n        }\r\n    ],\r\n    \"totalAmount\": 101.0\r\n}"
@@ -138,7 +342,202 @@
 					]
 				}
 			},
-			"response": []
+			"response": [
+				{
+					"name": "api/orders",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"orderId\": 1234,\r\n    \"customerId\": 4567,\r\n    \"orderDate\": \"2023-10-31\",\r\n    \"items\": [\r\n        {\r\n            \"productId\": 1001,\r\n            \"quantity\": 2,\r\n            \"unitPrice\": 25.5\r\n        },\r\n        {\r\n            \"productId\": 2002,\r\n            \"quantity\": 1,\r\n            \"unitPrice\": 50.0\r\n        }\r\n    ],\r\n    \"totalAmount\": 101.0\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/orders",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"orders"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "plain",
+					"header": [
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "0"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, no-store, max-age=0, must-revalidate"
+						},
+						{
+							"key": "Pragma",
+							"value": "no-cache"
+						},
+						{
+							"key": "Expires",
+							"value": "0"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "Content-Type",
+							"value": "text/plain;charset=UTF-8"
+						},
+						{
+							"key": "Content-Length",
+							"value": "26"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 23 Mar 2025 16:08:05 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "Order created successfully"
+				}
+			]
+		},
+		{
+			"name": "api/orders NoAuth failure",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"orderId\": 1234,\r\n    \"customerId\": 4567,\r\n    \"orderDate\": \"2023-10-31\",\r\n    \"items\": [\r\n        {\r\n            \"productId\": 1001,\r\n            \"quantity\": 2,\r\n            \"unitPrice\": 25.5\r\n        },\r\n        {\r\n            \"productId\": 2002,\r\n            \"quantity\": 1,\r\n            \"unitPrice\": 50.0\r\n        }\r\n    ],\r\n    \"totalAmount\": 101.0\r\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/api/orders",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"api",
+						"orders"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "api/orders NoAuth failure",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"orderId\": 1234,\r\n    \"customerId\": 4567,\r\n    \"orderDate\": \"2023-10-31\",\r\n    \"items\": [\r\n        {\r\n            \"productId\": 1001,\r\n            \"quantity\": 2,\r\n            \"unitPrice\": 25.5\r\n        },\r\n        {\r\n            \"productId\": 2002,\r\n            \"quantity\": 1,\r\n            \"unitPrice\": 50.0\r\n        }\r\n    ],\r\n    \"totalAmount\": 101.0\r\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8080/api/orders",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"api",
+								"orders"
+							]
+						}
+					},
+					"status": "Unauthorized",
+					"code": 401,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "0"
+						},
+						{
+							"key": "Cache-Control",
+							"value": "no-cache, no-store, max-age=0, must-revalidate"
+						},
+						{
+							"key": "Pragma",
+							"value": "no-cache"
+						},
+						{
+							"key": "Expires",
+							"value": "0"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Content-Length",
+							"value": "126"
+						},
+						{
+							"key": "Date",
+							"value": "Sun, 23 Mar 2025 16:08:29 GMT"
+						},
+						{
+							"key": "Keep-Alive",
+							"value": "timeout=60"
+						},
+						{
+							"key": "Connection",
+							"value": "keep-alive"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"path\": \"/api/orders\",\n    \"error\": \"Unauthorized\",\n    \"message\": \"Full authentication is required to access this resource\",\n    \"status\": 401\n}"
+				}
+			]
 		}
 	],
 	"variable": [
