@@ -8,21 +8,49 @@
 	"item": [
 		{
 			"name": "api/auth/signup",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 200\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response has the required fields\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.message).to.exist;\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Message is a non-empty string\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(responseData.message).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Message should not be empty\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Content type is application/json\", function () {\r",
+							"  pm.expect(pm.response.headers.get(\"Content-Type\")).to.include(\"application/json\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"request": {
 				"auth": {
-					"type": "basic",
-					"basic": [
-						{
-							"key": "password",
-							"value": "123",
-							"type": "string"
-						},
-						{
-							"key": "username",
-							"value": "postgres",
-							"type": "string"
-						}
-					]
+					"type": "noauth"
 				},
 				"method": "POST",
 				"header": [
@@ -33,7 +61,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"username\": \"newuser\",\r\n    \"password\": \"securepassword\",\r\n    \"email\": \"newuser@example.com\",\r\n    \"roles\": [\"ROLE_USER\"]\r\n}"
+					"raw": "{\r\n    \"username\": \"newuser6\",\r\n    \"password\": \"securepassword\",\r\n    \"email\": \"newuser6@example.com\",\r\n    \"roles\": [\"ROLE_USER\"]\r\n}"
 				},
 				"url": {
 					"raw": "http://localhost:8080/api/auth/signup",
@@ -161,7 +189,38 @@
 							"    console.log(\"Access token stored in collection variable: \" + responseData.accessToken);\r",
 							"} else {\r",
 							"    console.log(\"Access token not found in the response.\");\r",
-							"}"
+							"}\r",
+							"\r",
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response contains accessToken\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property(\"accessToken\");\r",
+							"    pm.expect(jsonData.accessToken).to.be.a(\"string\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response contains username\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property(\"username\", \"newuser\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response contains email\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property(\"email\", \"newuser@example.com\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response contains roles\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).to.have.property(\"roles\");\r",
+							"    pm.expect(jsonData.roles).to.include(\"ROLE_USER\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Token type is Bearer\", function () {\r",
+							"    const jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.tokenType).to.equal(\"Bearer\");\r",
+							"});"
 						],
 						"type": "text/javascript",
 						"packages": {}
@@ -417,6 +476,56 @@
 		},
 		{
 			"name": "api/orders NoAuth failure",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 401\", function () {\r",
+							"  pm.expect(pm.response.code).to.equal(401);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response has the required fields\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    \r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData).to.have.property('path');\r",
+							"    pm.expect(responseData).to.have.property('error');\r",
+							"    pm.expect(responseData).to.have.property('message');\r",
+							"    pm.expect(responseData).to.have.property('status');\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Path is a non-empty string\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData.path).to.be.a(\"string\").and.to.have.lengthOf.at.least(1, \"Value should not be empty\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Error is a non-empty string\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData.error).to.be.a(\"string\").and.to.have.lengthOf.at.least(1, \"Value should not be empty\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Message is a non-empty string\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData.message).to.be.a(\"string\").and.to.have.lengthOf.at.least(1, \"Value should not be empty\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"  pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
 			"request": {
 				"auth": {
 					"type": "noauth"

@@ -9,10 +9,9 @@ This project is an Order Taking and Fulfilment API implemented using Spring Boot
 - Using [BezKoder Spring Security with PSQL](https://github.com/bezkoder/spring-boot-security-postgresql) authentication
   - Sign-in was modified from original to use header based, basic auth
 - Gradle build with docker
-- Docker with compose up (todo)
+- Docker compose 
   - To include a postgres container for development
 - orders api requests to rabbitMq or kafka (todo)
-- 
 
 ## Requirements
 
@@ -21,15 +20,29 @@ This project is an Order Taking and Fulfilment API implemented using Spring Boot
 
 ## Getting Started
 
-1. Clone the repository and navigate to its dir
-2. Build docker image
+Clone the repository and navigate to its dir
+
+### Local development (with local postgres)
+
+Build docker image (compose up includes local postgres for development)
+
+- 
+    ```sh
+    docker-compose up
+    ```
+    
+### Multistage docker build (no local postgres)
+
+If the local postgres is not required you can build the multistage docker file on its own (no local postgres)
+
+- 
     ```sh
     docker build -t orders-app:1.0 .
     ```
 
-3. Run
-    ```sh
-   docker run -d -p 8080:8080 orders-app:1.0
-    ```
+Then run the container
 
-4. Import provided postman collection to sign up, sign in with a 1 hr access token and make requests
+- 
+    ```sh
+    docker run -d -p 8080:8080 orders-app:1.0
+    ```
