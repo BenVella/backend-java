@@ -7,10 +7,15 @@
       - "8080:8080" # Exposes the application on port 8080
     depends_on:
       - postgres
+      - rabbitmq
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/orderdb
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: 123
+      SPRING_RABBITMQ_HOST: rabbitmq
+      SPRING_RABBITMQ_PORT: 5672
+      SPRING_RABBITMQ_USERNAME: guest
+      SPRING_RABBITMQ_PASSWORD: guest
 
   postgres:
     image: postgres:latest
@@ -25,5 +30,16 @@
       - postgres_data:/var/lib/postgresql/data # Persists data locally to avoid loss
       # Required setup for our auth / security logic
       - ./scripts/init-security.sql:/docker-entrypoint-initdb.d/init-security.sql
+
+  rabbitmq:
+    image: rabbitmq:management
+    container_name: rabbitmq
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    ports:
+      - "5672:5672"   # RabbitMQ communication port
+      - "15672:15672" # RabbitMQ management UI port
+
 volumes:
   postgres_data:
