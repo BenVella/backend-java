@@ -20,29 +20,33 @@ This project is an Order Taking and Fulfilment API implemented using Spring Boot
 
 ## Getting Started
 
-Clone the repository and navigate to its dir
+Clone the repository and navigate to its dir.
 
-### Local development (with local postgres)
+- Make sure to build  the component first
+  ```sh
+  docker build -t orders-app:1.0 .
+  ```
+  
+### Local development (with local postgres and rabbitMq)
 
-Build docker image (compose up includes local postgres for development)
-
-- 
+- Build docker image (compose up includes local postgres for development)
     ```sh
     docker-compose up
     ```
     
-### Multistage docker build (no local postgres)
+# Deployment Notes
 
-If the local postgres is not required you can build the multistage docker file on its own (no local postgres)
+- Consider building without the integrated resources (postgres and rabbitMq)
+- Security details and credentials should all be migrated to a secret manager (such as [Google Secret Manager](https://cloud.google.com/secret-manager/docs/configuring-secret-manager))
+- Authentication should also be ported out of this application for larger implementation scopes.
 
-- 
-    ```sh
-    docker build -t orders-app:1.0 .
-    ```
+### Multistage docker build (no local postgres or rabbitMq)
 
-Then run the container
+For production, you don't want to use the included postgres / rabbitMq deployments but manage them separately and bind to them
 
-- 
+(Some additional work and reconfiguration would be required for this)
+
+- Run the container
     ```sh
     docker run -d -p 8080:8080 orders-app:1.0
     ```

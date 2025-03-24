@@ -3,7 +3,6 @@ package com.backend.security;
 import com.backend.security.jwt.AuthEntryPointJwt;
 import com.backend.security.jwt.AuthTokenFilter;
 import com.backend.security.services.UserDetailsServiceImpl;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,11 +22,14 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 // jsr250Enabled = true,
 // prePostEnabled = true) // by default
 public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
-  @Autowired
-  UserDetailsServiceImpl userDetailsService;
+  private final UserDetailsServiceImpl userDetailsService;
 
-  @Autowired
-  private AuthEntryPointJwt unauthorizedHandler;
+  private final AuthEntryPointJwt unauthorizedHandler;
+
+  public WebSecurityConfig(UserDetailsServiceImpl userDetailsService, AuthEntryPointJwt unauthorizedHandler) {
+    this.userDetailsService = userDetailsService;
+    this.unauthorizedHandler = unauthorizedHandler;
+  }
 
   @Bean
   public AuthTokenFilter authenticationJwtTokenFilter() {
