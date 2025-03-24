@@ -31,7 +31,7 @@ Clone the repository and navigate to its dir.
 
 - Build docker image (compose up includes local postgres for development)
     ```sh
-    docker-compose up
+    docker-compose up --build
     ```
     
 # Deployment Notes

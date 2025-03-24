@@ -1,8 +1,9 @@
 package com.backend.order.service;
 
-import com.backend.order.messaging.MessagingConfig;
-import com.backend.order.messaging.Receiver;
+import com.backend.messaging.MessagingConfig;
+import com.backend.messaging.Receiver;
 import com.backend.order.model.Order;
+import com.backend.order.payload.request.CreateOrderRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -34,7 +35,10 @@ public class OrderService {
         }
     }
 
-    public void createOrder(Order order) {
+    public Order createOrder(CreateOrderRequest orderRequest) {
+        Order order = new Order();
+        if (orderRequest != null) {}
+
         try {
             log.info("Sending order to queue {}", order);
             pushMessage(order);
@@ -46,10 +50,11 @@ public class OrderService {
         // Publish event to RabbitMQ or Kafka
         // Logic to validate and create order
         // Publish event to RabbitMQ or Kafka
+        return order;
     }
 
     public Order getOrderById(Long orderId) {
-        // Logic to retrieve order by ID
+        // TODO: This would be developer only for inspecting orders in the DB
         return new Order(); // Replace with actual retrieval logic
     }
 }
