@@ -18,20 +18,28 @@ repositories {
 }
 
 dependencies {
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.springframework.boot:spring-boot-starter-security")
     implementation("org.springframework.boot:spring-boot-starter-web")
+    // Auth
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
+    implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
+
     implementation("org.springframework.boot:spring-boot-starter-validation")
+    // Data
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
     implementation("org.postgresql:postgresql")
     implementation("org.springframework.boot:spring-boot-starter-amqp")
 
-    // JWT
-    implementation("io.jsonwebtoken:jjwt-api:0.11.5")
-    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
-    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
+    // To bypass direct docker deployment
+    implementation("org.springframework.boot:spring-boot-docker-compose")
+
+    // Webjars
+    implementation("org.webjars:bootstrap:5.3.0")
+    implementation("org.webjars:jquery:3.6.4")
+    implementation("org.webjars:js-cookie:3.0.1")
 
     // Testing
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.security:spring-security-test")
 }
 
 tasks.withType<Test> {

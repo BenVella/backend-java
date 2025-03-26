@@ -3,7 +3,7 @@ FROM gradle:latest AS build
 ENV APP_HOME=/app/
 WORKDIR $APP_HOME
 COPY . .
-RUN chmod +x $APP_HOME/scripts/build.sh
+RUN ./gradlew build
 
 # Package stage
 FROM eclipse-temurin:21-jre

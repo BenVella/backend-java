@@ -1,0 +1,37 @@
+spring:
+  profiles:
+    active: secrets
+  application:
+    name: order-taking-api
+  security:
+    oauth2:
+      resourceserver.jwt.issuer-uri: https://accounts.google.com
+      client:
+        registration:
+          google:
+            client-id: ${secret.oauth.google.client-id}
+            client-secret: ${secret.oauth.google.client-secret}
+            redirect-uri: http://localhost:8080/login/oauth2/code/google
+            scope: openid,profile,email
+
+  datasource:
+    url: ${secret.datasource.url}
+    username: ${secret.datasource.username}
+    password: ${secret.datasource.password}
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: ${secret.rabbitmq.username}
+    password: ${secret.rabbitmq.password}
+
+# Logging
+logging:
+  level:
+    root: info
+    org:
+      springframework:
+        security: debug
+        security.oauth2.client: debug
+        web: debug
+        boot: info
