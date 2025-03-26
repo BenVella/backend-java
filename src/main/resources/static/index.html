@@ -8,29 +8,29 @@
 <meta name="viewport" content="width=device-width" />
 <base href="/" />
 <link rel="stylesheet" type="text/css"
-    href="/webjars/bootstrap/css/bootstrap.min.css" />
-<script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
+    href="/webjars/bootstrap/5.3.0/css/bootstrap.min.css" />
+<script type="text/javascript" src="/webjars/jquery/3.6.4/jquery.min.js"></script>
 <script type="text/javascript"
-    src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+    src="/webjars/bootstrap/5.3.0/js/bootstrap.min.js"></script>
 </head>
 <body>
     <h1>Login</h1>
     <div class="container text-danger error"></div>
-    <div class="container unauthenticated">
-        With GitHub: <a href="/oauth2/authorization/github">click here</a>
-    </div>
+<!--    <div class="container unauthenticated">-->
+<!--        With GitHub: <a href="/oauth2/authorization/github">click here</a>-->
+<!--    </div>-->
     <div class="container authenticated" style="display: none">
         Logged in as: <span id="user"></span>
         <div>
             <button onClick="logout()" class="btn btn-primary">Logout</button>
         </div>
     </div>
-    <script type="text/javascript" src="/webjars/js-cookie/js.cookie.js"></script>
+    <script type="text/javascript" src="/webjars/js-cookie/3.0.1/js.cookie.js"></script>
     <script type="text/javascript">
           $.ajaxSetup({
             beforeSend : function(xhr, settings) {
-              if (settings.type == 'POST' || settings.type == 'PUT'
-                  || settings.type == 'DELETE') {
+              if (settings.type === 'POST' || settings.type === 'PUT'
+                  || settings.type === 'DELETE') {
                 if (!(/^http:.*/.test(settings.url) || /^https:.*/
                     .test(settings.url))) {
                   // Only send the token to relative URLs i.e. locally.

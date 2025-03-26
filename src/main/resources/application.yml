@@ -1,30 +1,37 @@
 spring:
+  profiles:
+    active: secrets
   application:
     name: order-taking-api
   security:
     oauth2:
+      resourceserver.jwt.issuer-uri: https://accounts.google.com
       client:
         registration:
-          github:
-            client-id: your-github-client-id
-            client-secret: your-github-client-secret
+          google:
+            client-id: ${secret.oauth.google.client-id}
+            client-secret: ${secret.oauth.google.client-secret}
+            redirect-uri: http://localhost:8080/login/oauth2/code/google
+            scope: openid,profile,email
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/orderdb
-    username: postgres
-    password: 123
+    url: ${secret.datasource.url}
+    username: ${secret.datasource.username}
+    password: ${secret.datasource.password}
 
   rabbitmq:
     host: localhost
     port: 5672
-    username: guest
-    password: guest
+    username: ${secret.rabbitmq.username}
+    password: ${secret.rabbitmq.password}
 
 # Logging
 logging:
   level:
-    root: INFO
+    root: info
     org:
-    springframework:
-    security: DEBUG
-    boot: INFO
+      springframework:
+        security: debug
+        security.oauth2.client: debug
+        web: debug
+        boot: info
