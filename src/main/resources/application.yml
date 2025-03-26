@@ -1,0 +1,30 @@
+spring:
+  application:
+    name: order-taking-api
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: your-github-client-id
+            client-secret: your-github-client-secret
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/orderdb
+    username: postgres
+    password: 123
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+# Logging
+logging:
+  level:
+    root: INFO
+    org:
+    springframework:
+    security: DEBUG
+    boot: INFO
