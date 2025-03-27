@@ -1,4 +1,4 @@
-package com.backend.messaging;
+package com.backend.amqp;
 
 import java.util.concurrent.TimeUnit;
 
@@ -6,13 +6,16 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+/**
+ * A temporary implementation of CommandLineRunner for output visualisation
+ */
 @Component
-public class Runner implements CommandLineRunner {
+public class RabbitMqRunner implements CommandLineRunner {
 
     private final RabbitTemplate rabbitTemplate;
     private final Receiver receiver;
 
-    public Runner(Receiver receiver, RabbitTemplate rabbitTemplate) {
+    public RabbitMqRunner(Receiver receiver, RabbitTemplate rabbitTemplate) {
         this.receiver = receiver;
         this.rabbitTemplate = rabbitTemplate;
     }

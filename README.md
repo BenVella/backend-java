@@ -2,68 +2,69 @@
 
 ## Introduction
 
-This project is an Order Taking and Fulfilment API implemented using Spring Boot. It provides functionalities for accepting, validating, and processing orders, as well as order approval and fulfilment.
+This project is an Order Taking and Fulfilment API implemented using Spring Boot. It's final version is targeting to provide logic for accepting, validating, and processing orders, as well as order approval and fulfilment secured behind an authentication system.
 
 It's more of a prototype / proof of concept / spring boot playground.  Don't bet your life on it, unless it ain't worth much :)
 
+**_Remember to check the docs folder for additional documentation with useful info._**
+
 ## Features and notes
 
-- Using [BezKoder Spring Security with PSQL](https://github.com/bezkoder/spring-boot-security-postgresql) authentication
-  - Sign-in was modified from original to use header based, basic auth
-- Gradle build with docker
-- Docker compose 
-  - To include a postgres container for development
+- Gradle build with docker-compose
+- Tried various integrated Spring Boot Security options
+  - BezKoder's JWT auth (Archaic and outdated)
+  - Github and Google OAuth2
+    - Github doesn't really expose an issuer-uri 
+    - and Google's resourceserver provides opaque JWT which require introspection, making it an expensive call to support
+  - Keycloak Auth <- Current target, not quite completed since ran out of time
+- Docker compose
+  - rabbitmq, for eventual integration of amqp
+  - keycloak for the targeted auth system once setup
+    - this also connects to postgres
 - orders api requests to rabbitMq or kafka (todo)
+  - Some structure is present under `com.backend.order`, but requires proper hookup
+  - The structure should demonstrate the general flow of code, which should evolve as more functionality would be brought in
 
-## Requirements
+## Execution Requirements
 
 - Java 21 or higher
-  - Suggested to install via sdkman
+  - Suggested to install via sdkman (not super stable on Windows)
 - Docker Desktop
-- **_Google API Credentials supporting backend for localhost_**
-  - Navigate to [Google Auth Clients](https://console.cloud.google.com/auth/clients)
-  - Create a client -> Web Application
-  - Add a redirect URI: `http://localhost:8080/login/oauth2/code/google`
-  - Create a `src/main/resources/application-secrets.yml` file with the below contents (replace as necessary)
+- Create a `src/main/resources/application-secrets.yml` file with the below contents (replace as necessary)
 
-```yml
-secret:
-  oauth:
-    google:
-      client-id: copied-id
-      client-secret: copied-secret
-    github: # optional
-      client-id: id
-      client-secret: secret
-  datasource:
-    url: jdbc:postgresql://localhost:5432/orderdb
-    username: <USERNAME>
-    password: <PASSWORD>
-  rabbitmq:
-    username: <USERNAME>
-    password: <PASSWORD>
-```
+  ```yml
+  secret:
+    rabbitmq:
+      username: <USERNAME>
+      password: <PASSWORD>
+  ```
+  
+Since these are naively setup in `docker-compose.yml` currently, you can check there to find out the details
 
-## Getting Started
+# Getting Started
 
-Clone the repository and navigate to its dir.
+This only covers local development commands.  It's an unfinished project acting as a preview.
 
-### Local Development
-The easiest and fastest way to run for development is to make use of `org.springframework.boot:spring-boot-docker-compose`.
+- Note that I elected to move away from multistage docker builds since the convenience was just costing a lot of time in containerisation.
+- Proper devops would typically require the build to happen outside of docker, and docker would only be used to execute the built JAR
 
-- With IntelliJ, you can wait until the build is resolved, or create one for the local machine.
-- Simply run it and the spring boot docker compose will auto compose the additional containers
+## Suggested
 
-### Alternative via manual docker
+- Suggested approach is to use to build plainly
+  ```shell
+  ./gradlew clean build
+  ``` 
 
-- Build docker image (compose up includes local postgres for development)
-    ```sh
-    docker-compose up --build
-    ```
+- Then simply allow use IntelliJs own SpringBoot configuration
+  - The gradle `spring-boot-docker-compose` should automatically pickup the `docker-compose.yml` and provision the rabbitmq container
 
-- Note that the `./gradlew` wrapper will pull the distro each time, which results in minutes long builds.
-- It also hasn't been tested very much after swapping to the integrated docker-compose implementation and is likely to
-require amendments
+### Alternative
+
+If you want to stick to the terminal, or hate colors in IntelliJ you could:
+
+- `./gradlew clean build` normally
+- From `build.gradle.kts`, strip out the implementation `spring-boot-docker-compose` entry (this will conflict otherwise)
+- Use `docker-compose up` to run it through compose.
 
 # Deployment Notes
 

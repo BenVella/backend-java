@@ -5,25 +5,17 @@ spring:
     name: order-taking-api
   security:
     oauth2:
-#      client:
-#        registration:
-#          google:
-#            client-id: ${secret.oauth.google.client-id}
-#            client-secret: ${secret.oauth.google.client-secret}
-#            redirect-uri: http://localhost:8080/login/oauth2/code/google
-#            scope:
-#              - email
-#              - profile
-#              - openid
+      client:
+        registration:
+          keycloak:
+            client-id: demo
+            scope: openid
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8080/realms/myrealm
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8081/auth/realms/master
-          jwk-set-uri: http://localhost:8081/auth/realms/master/protocol/openid-connect/certs
-  docker.compose.enabled: false
-  datasource:
-    url: ${secret.datasource.url}
-    username: ${secret.datasource.username}
-    password: ${secret.datasource.password}
+          issuer-uri: http://localhost:8080/realms/myrealm
 
   rabbitmq:
     host: localhost

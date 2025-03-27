@@ -1,4 +1,4 @@
-package com.backend.messaging;
+package com.backend.amqp;
 
 import java.util.concurrent.CountDownLatch;
 import org.springframework.stereotype.Component;

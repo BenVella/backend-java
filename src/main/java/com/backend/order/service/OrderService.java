@@ -1,7 +1,7 @@
 package com.backend.order.service;
 
-import com.backend.messaging.MessagingConfig;
-import com.backend.messaging.Receiver;
+import com.backend.amqp.MessagingConfig;
+import com.backend.amqp.Receiver;
 import com.backend.order.model.Order;
 import com.backend.order.payload.request.CreateOrderRequest;
 import org.slf4j.Logger;

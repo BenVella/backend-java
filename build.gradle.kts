@@ -23,14 +23,12 @@ dependencies {
 //    implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
     implementation("org.springframework.boot:spring-boot-starter-oauth2-resource-server")
 
-    implementation("org.springframework.boot:spring-boot-starter-validation")
     // Data
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.postgresql:postgresql")
+    implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-amqp")
 
-    // To bypass direct docker deployment
-//    implementation("org.springframework.boot:spring-boot-docker-compose")
+    // This is when doing directly via IntelliJ.  Remove this when using docker-compose
+    implementation("org.springframework.boot:spring-boot-docker-compose")
 
     // Webjars
     implementation("org.webjars:bootstrap:5.3.0")

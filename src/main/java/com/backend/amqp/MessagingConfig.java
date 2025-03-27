@@ -1,4 +1,4 @@
-package com.backend.messaging;
+package com.backend.amqp;
 
 import org.springframework.amqp.core.Binding;
 import org.springframework.amqp.core.BindingBuilder;
