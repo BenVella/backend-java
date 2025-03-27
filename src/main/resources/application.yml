@@ -5,14 +5,20 @@ spring:
     name: order-taking-api
   security:
     oauth2:
-      resourceserver.jwt.issuer-uri: https://accounts.google.com
-      client:
-        registration:
-          google:
-            client-id: ${secret.oauth.google.client-id}
-            client-secret: ${secret.oauth.google.client-secret}
-            redirect-uri: http://localhost:8080/login/oauth2/code/google
-            scope: openid,profile,email
+#      client:
+#        registration:
+#          google:
+#            client-id: ${secret.oauth.google.client-id}
+#            client-secret: ${secret.oauth.google.client-secret}
+#            redirect-uri: http://localhost:8080/login/oauth2/code/google
+#            scope:
+#              - email
+#              - profile
+#              - openid
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8081/auth/realms/master
+          jwk-set-uri: http://localhost:8081/auth/realms/master/protocol/openid-connect/certs
 
   datasource:
     url: ${secret.datasource.url}
@@ -24,6 +30,10 @@ spring:
     port: 5672
     username: ${secret.rabbitmq.username}
     password: ${secret.rabbitmq.password}
+
+  mvc:
+    # Development only
+    log-request-details: true
 
 # Logging
 logging:
