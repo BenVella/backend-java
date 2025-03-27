@@ -7,11 +7,11 @@
       - "8080:8080" # Exposes the application on port 8080
     depends_on:
       postgres:
-        condition: service_started # We don't use this immediately
+        condition: service_started
       rabbitmq:
-        condition: service_healthy
+        condition: service_healthy # takes a while to start
       keycloak:
-        condition: service_healthy
+        condition: service_started
     environment:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/orderdb
       SPRING_DATASOURCE_USERNAME: postgres
@@ -20,7 +20,6 @@
       SPRING_RABBITMQ_PORT: 5672
       SPRING_RABBITMQ_USERNAME: guest
       SPRING_RABBITMQ_PASSWORD: guest
-      KEYCLOAK_REALM: master
 
   postgres:
     image: postgres:latest
@@ -38,7 +37,6 @@
 
   rabbitmq:
     image: rabbitmq:management
-    container_name: rabbitmq
     environment:
       RABBITMQ_DEFAULT_USER: guest
       RABBITMQ_DEFAULT_PASS: guest
@@ -52,18 +50,13 @@
 
   keycloak:
     image: quay.io/keycloak/keycloak:latest
-    container_name: keycloak
     environment:
-      KEYCLOAK_USER: admin
-      KEYCLOAK_PASSWORD: admin
-      DB_VENDOR: h2
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    command:
+      - start-dev
     ports:
-      - "8081:8080" # Exposes Keycloak on port 8081
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/auth"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
+      - "8181:8080"
 
 volumes:
   postgres_data:

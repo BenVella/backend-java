@@ -19,7 +19,7 @@ spring:
         jwt:
           issuer-uri: http://localhost:8081/auth/realms/master
           jwk-set-uri: http://localhost:8081/auth/realms/master/protocol/openid-connect/certs
-
+  docker.compose.enabled: false
   datasource:
     url: ${secret.datasource.url}
     username: ${secret.datasource.username}

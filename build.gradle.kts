@@ -30,7 +30,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-amqp")
 
     // To bypass direct docker deployment
-    implementation("org.springframework.boot:spring-boot-docker-compose")
+//    implementation("org.springframework.boot:spring-boot-docker-compose")
 
     // Webjars
     implementation("org.webjars:bootstrap:5.3.0")
