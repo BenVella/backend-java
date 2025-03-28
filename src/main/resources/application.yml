@@ -1,0 +1,39 @@
+spring:
+  profiles:
+    active: secrets
+  application:
+    name: order-taking-api
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: demo
+            scope: openid
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8080/realms/myrealm
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/myrealm
+
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: ${secret.rabbitmq.username}
+    password: ${secret.rabbitmq.password}
+
+  mvc:
+    # Development only
+    log-request-details: true
+
+# Logging
+logging:
+  level:
+    root: info
+    org:
+      springframework:
+        security: debug
+        security.oauth2.client: debug
+        web: debug
+        boot: info

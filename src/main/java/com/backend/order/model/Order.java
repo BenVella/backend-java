@@ -1,7 +1,7 @@
 package com.backend.order.model;
 
 public class Order {
-    private Long id;
+    private String id;
     private String customerDetails;
     private String installationAddress;
     private String preferredInstallationDate;
@@ -57,11 +57,11 @@ public class Order {
         this.customerDetails = customerDetails;
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(String id) {
         this.id = id;
     }
 

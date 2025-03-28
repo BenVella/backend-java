@@ -3,33 +3,19 @@
     build:
       context: .
       dockerfile: Dockerfile
+    container_name: backend-java-app
     ports:
       - "8080:8080" # Exposes the application on port 8080
     depends_on:
-      - postgres
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy # takes a while to start
+      keycloak:
+        condition: service_started
     environment:
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/orderdb
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: 123
       SPRING_RABBITMQ_HOST: rabbitmq
       SPRING_RABBITMQ_PORT: 5672
       SPRING_RABBITMQ_USERNAME: guest
       SPRING_RABBITMQ_PASSWORD: guest
-
-  postgres:
-    image: postgres:latest
-    container_name: postgres-db
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 123
-      POSTGRES_DB: orderdb
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data # Persists data locally to avoid loss
-      # Required setup for our auth / security logic
-      - ./scripts/init-security.sql:/docker-entrypoint-initdb.d/init-security.sql
 
   rabbitmq:
     image: rabbitmq:management
@@ -40,6 +26,33 @@
     ports:
       - "5672:5672"   # RabbitMQ communication port
       - "15672:15672" # RabbitMQ management UI port
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 10s
+      timeout: 5s
 
-volumes:
-  postgres_data:
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: keycloak
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: password
+    ports:
+      - "8090:8090"
+    depends_on:
+      - postgres
+    command: start-dev
+
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    environment:
+      POSTGRES_DB: keycloak
+      POSTGRES_USER: keycloak
+      POSTGRES_PASSWORD: password
+    ports:
+      - "5432:5432"
