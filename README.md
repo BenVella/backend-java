@@ -8,6 +8,8 @@ It's more of a prototype / proof of concept / spring boot playground.  Don't bet
 
 **_Remember to check the docs folder for additional documentation with useful info._**
 
+It's more of a prototype / proof of concept / spring boot playground.  Don't bet your life on it, unless it ain't worth much :)
+
 ## Features and notes
 
 - Gradle build with docker-compose
