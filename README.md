@@ -50,13 +50,19 @@ This only covers local development commands.  It's an unfinished project acting 
 
 ## Suggested
 
-- Suggested approach is to use to build plainly
+Simply running spring boot should see you sorted, so long as you have a Docker Engine running.  This should provide with better coloring and a generally convenient way to run and re-run your apps.
+
+
+## Alternative Approach
+
+If you encounter issues, don't have IntelliJ at hand and can't quite setup another IDE to this for you, the manual approach is as follows.
+
+To avoid multistage docker files and only build when necessary, you must build before composing.
+
   ```shell
   ./gradlew clean build
+  docker-compose up
   ``` 
-
-- Then simply allow use IntelliJs own SpringBoot configuration
-  - The gradle `spring-boot-docker-compose` should automatically pickup the `docker-compose.yml` and provision the rabbitmq container
 
 ### Alternative
 
@@ -83,3 +89,20 @@ For production, you don't want to use the included postgres / rabbitMq deploymen
     ```sh
     docker run -d -p 8080:8080 orders-app:1.0
     ```
+  
+# Authentication
+
+Still a WIP.  It seemed like a worthwhile challenge to focus on
+
+- Tried BezKoder's JWT (which worked but was severely outdated)
+- OAuth Github and Google but ditched for excessive complexity and heavy limitations
+- Keycloak - still to fully implement but ran out of time
+
+# Ordering API
+
+Also a WIP.  Placed some skeleton structure.
+
+- I suppose the devil is in the details for APIs, it's easy to over or under engineer them and make a mess.
+- Best to evolve the code alongside the necessary demands.
+- Generally speaking however, API work is quite straightforward and "boring"
+- Would absolutely use an Open API Spec 3.0 for documenting (even if just for internal use only)
