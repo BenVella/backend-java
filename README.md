@@ -11,26 +11,26 @@ It's more of a prototype / proof of concept / spring boot playground.  Don't bet
 ## Features and notes
 
 - Gradle build with docker-compose
-- Tried various integrated Spring Boot Security options
-  - BezKoder's JWT auth (Archaic and outdated)
-  - Github and Google OAuth2
-    - Github doesn't really expose an issuer-uri 
-    - and Google's resourceserver provides opaque JWT which require introspection, making it an expensive call to support
-  - Keycloak Auth <- Current target, not quite completed since ran out of time
+- Integrating locally hosted dockerized Keycloak instance for Token Endpoint authentication
 - Docker compose
-  - rabbitmq, for eventual integration of amqp
+  - rabbitmq, for eventual integration of an amqp
   - keycloak for the targeted auth system once setup
-    - this also connects to postgres
+  - postgresdb for keycloak above
 - orders api requests to rabbitMq or kafka (todo)
   - Some structure is present under `com.backend.order`, but requires proper hookup
   - The structure should demonstrate the general flow of code, which should evolve as more functionality would be brought in
 
 ## Execution Requirements
 
-- Java 21 or higher
-  - Suggested to install via sdkman (not super stable on Windows)
-- Docker Desktop
-- Create a `src/main/resources/application-secrets.yml` file with the below contents (replace as necessary)
+- Docker Desktop (needed for our docker compose setup)
+- Java 21 or higher, suggested install via Sdkman:
+  - `sdk selfupdate force` - Might help on Windows since it's not too robust
+  - `sdk install java 21-tem`
+  - `sdk default java 21-tem`
+  - For windows add JAVA_HOME to system vars: `JAVA_HOME = C:\Users\<USERNAME>\.sdkman\candidates\java\current`
+  - And include JAVA_HOME/bin to path: `%JAVA_HOME%\bin`
+- Create the `src/main/resources/application-secrets.yml` file locally.
+  - `.gitignore` will not include this file in version control.
 
   ```yml
   secret:
