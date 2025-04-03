@@ -17,6 +17,7 @@ spring:
     username: ${secret.rabbitmq.username}
     password: ${secret.rabbitmq.password}
 
+# See https://github.com/ch4mpy/spring-addons/blob/master/samples/webmvc-jwt-default
 com:
   c4-soft:
     springaddons:
