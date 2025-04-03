@@ -2,7 +2,10 @@
 
 ## Introduction
 
-This project is an Order Taking and Fulfilment API implemented using Spring Boot. It's final version is targeting to provide logic for accepting, validating, and processing orders, as well as order approval and fulfilment secured behind an authentication system.
+This started off as an interview task expecting a customer order management API.
+
+- The plumbing was the ultimate focus for me instead so little was on with respect to orders
+- Ordering was to be hollowed out and the backend was to shift towards a game development setup introducing a variety of bells and whistles
 
 It's more of a prototype / proof of concept / spring boot playground.  Don't bet your life on it, unless it ain't worth much :)
 
@@ -12,13 +15,12 @@ It's more of a prototype / proof of concept / spring boot playground.  Don't bet
 
 - Gradle build with docker-compose
 - Integrating locally hosted dockerized Keycloak instance for Token Endpoint authentication
-- Docker compose
+- Docker compose:
   - rabbitmq, for eventual integration of an amqp
-  - keycloak for the targeted auth system once setup
+  - keycloak for bearer based authentication for rest api consumption
   - postgresdb for keycloak above
-- orders api requests to rabbitMq or kafka (todo)
-  - Some structure is present under `com.backend.order`, but requires proper hookup
-  - The structure should demonstrate the general flow of code, which should evolve as more functionality would be brought in
+- RabbitMq
+  - Setup in docker and config but not being used at all for the time being, would be a good way to buffer and de-synchronise workloads
 
 ## Execution Requirements
 
@@ -46,63 +48,43 @@ Since these are naively setup in `docker-compose.yml` currently, you can check t
 This only covers local development commands.  It's an unfinished project acting as a preview.
 
 - Note that I elected to move away from multistage docker builds since the convenience was just costing a lot of time in containerisation.
-- Proper devops would typically require the build to happen outside of docker, and docker would only be used to execute the built JAR
+- Proper devops would typically require the build to happen outside of docker, and docker would help compose the final environment for the stack to run
 
-## Suggested
+## Build and Run
 
-Simply running spring boot should see you sorted, so long as you have a Docker Engine running.  This should provide with better coloring and a generally convenient way to run and re-run your apps.
-
-
-## Alternative Approach
-
-If you encounter issues, don't have IntelliJ at hand and can't quite setup another IDE to this for you, the manual approach is as follows.
-
-To avoid multistage docker files and only build when necessary, you must build before composing.
+All you need to get going is (as long as you meet requirements above):
 
   ```shell
-  ./gradlew clean build
-  docker-compose up
+  ./gradlew clean build && docker-compose up
   ``` 
 
-### Alternative
+The build will generate the `./build/` dir.
+Docker compose will copy the `./build/libs/<JAR_FILE>` into its working dir and wait on all necessary dependents to start.
 
-If you want to stick to the terminal, or hate colors in IntelliJ you could:
+### IntelliJ
 
-- `./gradlew clean build` normally
-- From `build.gradle.kts`, strip out the implementation `spring-boot-docker-compose` entry (this will conflict otherwise)
-- Use `docker-compose up` to run it through compose.
+If on IntelliJ, you can turn this into a Run Configuration:
 
-# Deployment Notes
+- Create a docker compose config
+- Add a "Before launch" step:
+  - `Run Gradle Task` -> `order-taking-api` -> Tasks: `build`
+
+# Notes
+
+## Deployment
 
 - Security details and credentials should all be migrated to a secret manager (such as [Google Secret Manager](https://cloud.google.com/secret-manager/docs/configuring-secret-manager)) and retrieved that way
-- A dedicated and better configured authentication to fit available resources should be used instead.
+- Keycloak should be hosted independently, and allowed-origins update to reflect this.
 
-### Direct Docker build (No compose)
+## Authentication
 
-This is still partially todo, this project isn't really intended for production use and use at your own discretion.
-
-For production, you don't want to use the included postgres / rabbitMq deployments but manage them separately and bind to them
-
-(Some additional work and reconfiguration would be required for this)
-
-- Run the container
-    ```sh
-    docker run -d -p 8080:8080 orders-app:1.0
-    ```
-  
-# Authentication
-
-Still a WIP.  It seemed like a worthwhile challenge to focus on
-
-- Tried BezKoder's JWT (which worked but was severely outdated)
-- OAuth Github and Google but ditched for excessive complexity and heavy limitations
 - Keycloak - still to fully implement but ran out of time
 
-# Ordering API
+## Rest API
 
 Also a WIP.  Placed some skeleton structure.
 
 - I suppose the devil is in the details for APIs, it's easy to over or under engineer them and make a mess.
 - Best to evolve the code alongside the necessary demands.
-- Generally speaking however, API work is quite straightforward and "boring"
-- Would absolutely use an Open API Spec 3.0 for documenting (even if just for internal use only)
+- Generally speaking however, API work is generally straightforward and lower effort than the plumbing that supports it
+- Would absolutely use an Open API Spec 3.0 for documenting the API (even if just for internal use only)
