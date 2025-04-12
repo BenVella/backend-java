@@ -1,39 +1,73 @@
+origins: http://localhost:4200,http://localhost:7080
+
+server:
+  error:
+    include-message: always
+  ssl:
+    enabled: false
+
 spring:
   profiles:
     active: secrets
   application:
     name: order-taking-api
-  security:
-    oauth2:
-      client:
-        registration:
-          keycloak:
-            client-id: demo
-            scope: openid
-        provider:
-          keycloak:
-            issuer-uri: http://localhost:8080/realms/myrealm
-      resourceserver:
-        jwt:
-          issuer-uri: http://localhost:8080/realms/myrealm
-
   rabbitmq:
     host: localhost
     port: 5672
     username: ${secret.rabbitmq.username}
     password: ${secret.rabbitmq.password}
 
-  mvc:
-    # Development only
-    log-request-details: true
-
+# See https://github.com/ch4mpy/spring-addons/blob/master/samples/webmvc-jwt-default
+com:
+  c4-soft:
+    springaddons:
+      oidc:
+        cors:
+          - path: /**
+            allowed-origin-patterns: ${origins}
+        ops:
+          - iss: http://keycloak:8442/realms/baeldung-keycloak
+            username-claim: preferred_username
+            authorities:
+              - path: $.realm_access.roles
+              - path: $.resource_access.*.roles
+        resourceserver:
+          permit-all:
+            - /no-op
+            - /greet/public
+            - /actuator/health/readiness
+            - /actuator/health/liveness
+            - /v3/api-docs/**
 # Logging
 logging:
   level:
-    root: info
     org:
-      springframework:
-        security: debug
-        security.oauth2.client: debug
-        web: debug
-        boot: info
+      springframework: DEBUG
+
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
+
+#---
+#scheme: https
+#keycloak-port: 8443
+#
+#server:
+#  ssl:
+#    enabled: true
+#
+#spring:
+#  config:
+#    activate:
+#      on-profile: ssl

@@ -18,7 +18,7 @@
       SPRING_RABBITMQ_PASSWORD: guest
 
   rabbitmq:
-    image: rabbitmq:management
+    image: rabbitmq:4.0
     container_name: rabbitmq
     environment:
       RABBITMQ_DEFAULT_USER: guest
@@ -32,26 +32,41 @@
       timeout: 5s
 
   keycloak:
-    image: quay.io/keycloak/keycloak:latest
+    image: quay.io/keycloak/keycloak:26.1.4
     container_name: keycloak
     environment:
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
       KC_DB: postgres
-      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak-db
       KC_DB_USERNAME: keycloak
       KC_DB_PASSWORD: password
+      KC_HTTP_PORT: 8442
+      KC_HOSTNAME: keycloak
+      KC_HOSTNAME_STRICT: true
+      KC_HTTP_RELATIVE_PATH: /
+      KC_HTTP_ENABLED: true
+      KC_HEALTH_ENABLED: true
+      KC_METRICS_ENABLED: true
+      #KC_HOSTNAME_DEBUG: true
+      #KC_LOG_LEVEL: DEBUG
     ports:
-      - "8090:8090"
+      - "8442:8442"
+    expose:
+        - "8442"
+    volumes:
+      - ./keycloak/:/opt/keycloak/data/import/
     depends_on:
       - postgres
-    command: start-dev
+    command:
+      - start-dev
+      - --import-realm
 
   postgres:
-    image: postgres:latest
+    image: postgres:17.4
     container_name: postgres
     environment:
-      POSTGRES_DB: keycloak
+      POSTGRES_DB: keycloak-db
       POSTGRES_USER: keycloak
       POSTGRES_PASSWORD: password
     ports:

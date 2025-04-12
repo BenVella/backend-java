@@ -1,0 +1,252 @@
+{
+	"info": {
+		"_postman_id": "db5e8641-078f-453f-862a-340ae3742d8a",
+		"name": "web-resource-server-jwt-decoder",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "3837818"
+	},
+	"item": [
+		{
+			"name": "access_token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Postman Test Script\r",
+							"pm.test(\"Extract and store access token\", function() {\r",
+							"    // Parse the response\r",
+							"    const responseBody = pm.response.json();\r",
+							"\r",
+							"    // Ensure access_token exists\r",
+							"    pm.expect(responseBody).to.have.property(\"access_token\");\r",
+							"\r",
+							"    // Store the token in an environment variable\r",
+							"    pm.collectionVariables.set(\"access_token\", responseBody.access_token);\r",
+							"\r",
+							"    // Verify the token has been stored\r",
+							"    const accessToken = pm.collectionVariables.get(\"access_token\");\r",
+							"    pm.expect(accessToken).to.be.a(\"string\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/x-www-form-urlencoded"
+					}
+				],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						},
+						{
+							"key": "client_id",
+							"value": "account-console",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "brice",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "secret",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8442/realms/baeldung-keycloak/protocol/openid-connect/token",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8442",
+					"path": [
+						"realms",
+						"baeldung-keycloak",
+						"protocol",
+						"openid-connect",
+						"token"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "access_token",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "password",
+									"type": "text"
+								},
+								{
+									"key": "client_id",
+									"value": "account-console",
+									"type": "text"
+								},
+								{
+									"key": "username",
+									"value": "brice",
+									"type": "text"
+								},
+								{
+									"key": "password",
+									"value": "secret",
+									"type": "text"
+								}
+							]
+						},
+						"url": {
+							"raw": "http://localhost:8442/realms/baeldung-keycloak/protocol/openid-connect/token",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8442",
+							"path": [
+								"realms",
+								"baeldung-keycloak",
+								"protocol",
+								"openid-connect",
+								"token"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Cache-Control",
+							"value": "no-store"
+						},
+						{
+							"key": "Pragma",
+							"value": "no-cache"
+						},
+						{
+							"key": "content-length",
+							"value": "2073"
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						},
+						{
+							"key": "Referrer-Policy",
+							"value": "no-referrer"
+						},
+						{
+							"key": "Strict-Transport-Security",
+							"value": "max-age=31536000; includeSubDomains"
+						},
+						{
+							"key": "X-Content-Type-Options",
+							"value": "nosniff"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "SAMEORIGIN"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						}
+					],
+					"cookie": [],
+					"body": "{\n    \"access_token\": \"eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJ3YURGeF9wVzVBbkZpb0Z6RWxla3lZZjlweGcwMnVvU2U4ZVk0eXd0SVRVIn0.eyJleHAiOjE3NDQ0NTk3MzAsImlhdCI6MTc0NDQ1OTQzMCwianRpIjoiZmFlMWJmN2EtNzQxOC00NjRlLTg0Y2UtNzEwMDliNWMzMzkwIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4NDQyL3JlYWxtcy9iYWVsZHVuZy1rZXljbG9hayIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiI4ODZlZmI0Yy01MDE4LTQ5YTUtOTg1NS05MWUzMjBkMWYxYzQiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJhY2NvdW50LWNvbnNvbGUiLCJzaWQiOiJjNzIxZGNjOS0wMWU2LTQwODgtYTA2Ni03MGRhZmVhZGFhMjQiLCJhY3IiOiIxIiwicmVzb3VyY2VfYWNjZXNzIjp7ImFjY291bnQiOnsicm9sZXMiOlsibWFuYWdlLWFjY291bnQiLCJtYW5hZ2UtYWNjb3VudC1saW5rcyJdfX0sInNjb3BlIjoicHJvZmlsZSBlbWFpbCIsImVtYWlsX3ZlcmlmaWVkIjp0cnVlLCJuYW1lIjoiQnJpY2UgQmFlbGR1bmciLCJwcmVmZXJyZWRfdXNlcm5hbWUiOiJicmljZSIsImdpdmVuX25hbWUiOiJCcmljZSIsImZhbWlseV9uYW1lIjoiQmFlbGR1bmciLCJlbWFpbCI6ImJyaWNlQGJhZWxkdW5nLmNvbSJ9.WDhf7RytivtM_rWcs6iOgQDBKnJA6JvYcfoqeCHHObo7CFdLIfT7EvmkrNHCiItaOCufNT_SDCkS91Y11UjYbGwuMhp6km0llUJL_YXMUW2D9zUS6UT9iyLpQ__e5iTCCoGKkaz6YQZwZmGeZg8SI1Yl_EiyZhohX2-zilcava5vW5nd2m3GuucTmte35YHCQwaN3jNe0CR5L4Buq3xDvE4PjCmey2GjJGzKe-BfOg-EJE3NWqfNTKWT01lGuEafS2bBjoFAhHw-zmxGeuri5eYorgcN1C58131CSZNLFVsiwXUzaEq1-TAdi_PfEgNNPQkoNWm1f3JQhoADc_DBvw\",\n    \"expires_in\": 300,\n    \"refresh_expires_in\": 1800,\n    \"refresh_token\": \"eyJhbGciOiJIUzUxMiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICI3OTFjNzU2NC05YWViLTRhM2ItODU3MS05MTJhZWJkMjFlOTQifQ.eyJleHAiOjE3NDQ0NjEyMzAsImlhdCI6MTc0NDQ1OTQzMCwianRpIjoiYWZjMTAwOTgtMGFmNS00NGQzLWI0NTQtZDU2ZjFlMjNjMjIzIiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4NDQyL3JlYWxtcy9iYWVsZHVuZy1rZXljbG9hayIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODQ0Mi9yZWFsbXMvYmFlbGR1bmcta2V5Y2xvYWsiLCJzdWIiOiI4ODZlZmI0Yy01MDE4LTQ5YTUtOTg1NS05MWUzMjBkMWYxYzQiLCJ0eXAiOiJSZWZyZXNoIiwiYXpwIjoiYWNjb3VudC1jb25zb2xlIiwic2lkIjoiYzcyMWRjYzktMDFlNi00MDg4LWEwNjYtNzBkYWZlYWRhYTI0Iiwic2NvcGUiOiJwcm9maWxlIHdlYi1vcmlnaW5zIHJvbGVzIGJhc2ljIGVtYWlsIGFjciJ9.FvhjvXS5ga0UyynuifAWW-lXHtSh5j2HQ6VD2IvhGGWYPZcdUZ40_XSQ1y3h_xwLm7WKtp-OsyeoUOkEogtGBA\",\n    \"token_type\": \"Bearer\",\n    \"not-before-policy\": 0,\n    \"session_state\": \"c721dcc9-01e6-4088-a066-70dafeadaa24\",\n    \"scope\": \"profile email\"\n}"
+				}
+			]
+		},
+		{
+			"name": "api/orders",
+			"protocolProfileBehavior": {
+				"disableCookies": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{access_token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "access_token",
+			"value": ""
+		}
+	]
+}
