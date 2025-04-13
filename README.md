@@ -55,7 +55,7 @@ This only covers local development commands.  It's an unfinished project acting 
 All you need to get going is (as long as you meet requirements above):
 
   ```shell
-  ./gradlew clean build && docker-compose up
+  ./gradlew clean build && docker compose down && docker-compose up --build app
   ``` 
 
 The build will generate the `./build/` dir.
