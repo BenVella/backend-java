@@ -3,6 +3,13 @@
 This runs with latest up top.  For whoever might be reviewing this, while this was spread over several days,
 it rarely exceeded 15 mins at a time before an interruption stepped in.  Suffice to say this is not even close to half way done.
 
+## 18/04/2025
+
+- Introducing the `com.backend.player` package
+  - Added a player entity and repository
+  - Plan is to fetch subject from provided jwt after successful authentication to use as client id
+- Faffing about with having two separate DBs, one for keycloak and one for the app
+
 ## 04/04/2025
 
 - Confirmed a standalone working version of keycloak with securityfilterchain against issuer jwt decoding

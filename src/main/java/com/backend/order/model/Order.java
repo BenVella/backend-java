@@ -1,6 +1,10 @@
 package com.backend.order.model;
 
-public class Order {
+import java.io.Serializable;
+
+public class Order implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     private String id;
     private String customerDetails;
     private String installationAddress;
@@ -64,6 +68,4 @@ public class Order {
     public void setId(String id) {
         this.id = id;
     }
-
-    // Getters and Setters
 }

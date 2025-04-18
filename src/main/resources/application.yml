@@ -11,6 +11,16 @@ spring:
     active: secrets
   application:
     name: order-taking-api
+  datasource:
+    url: jdbc:postgresql://postgres:5432/app_db
+    username: ${secret.db.username}
+    password: ${secret.db.password}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
   rabbitmq:
     host: localhost
     port: 5672
@@ -33,6 +43,7 @@ com:
               - path: $.resource_access.*.roles
         resourceserver:
           permit-all:
+            - /ping
             - /no-op
             - /greet/public
             - /actuator/health/readiness
@@ -42,7 +53,7 @@ com:
 logging:
   level:
     org:
-      springframework: DEBUG
+      springframework: INFO
 
 management:
   endpoint:

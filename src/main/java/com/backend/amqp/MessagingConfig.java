@@ -7,13 +7,25 @@ import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.adapter.MessageListenerAdapter;
+import org.springframework.amqp.support.converter.DefaultJackson2JavaTypeMapper;
+import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
-@Component
+@Configuration
 public class MessagingConfig {
     public static final String topicExchangeName = "spring-boot-exchange";
     public static final String queueName = "spring-boot";
+
+    @Bean
+    public Jackson2JsonMessageConverter messageConverter() {
+        Jackson2JsonMessageConverter converter = new Jackson2JsonMessageConverter();
+        converter.setClassMapper(new DefaultJackson2JavaTypeMapper() {{
+            setTrustedPackages("com.backend.order.model");
+        }});
+        return converter;
+    }
 
     @Bean
     Queue queue() {
