@@ -72,3 +72,5 @@
       - ./data/db:/docker-entrypoint-initdb.d
     ports:
       - "5432:5432"
+    expose:
+      - "5432"

@@ -4,6 +4,7 @@
 
 - restore deleted player profile
 - tests for player package
+- Expose postgres container for inspection
 
 ## Authentication
 
