@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface PlayerRepository extends JpaRepository<Player, Long> {
     Optional<Player> findByCode(String code);
     Optional<Player> findByAuthId(String authId);
+    Optional<Player> findByAuthIdAndDeletedFalse(String authId);
+    Optional<Player> findByCodeAndDeletedFalse(String code);
 }

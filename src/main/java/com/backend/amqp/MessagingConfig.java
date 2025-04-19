@@ -22,7 +22,7 @@ public class MessagingConfig {
     public Jackson2JsonMessageConverter messageConverter() {
         Jackson2JsonMessageConverter converter = new Jackson2JsonMessageConverter();
         converter.setClassMapper(new DefaultJackson2JavaTypeMapper() {{
-            setTrustedPackages("com.backend.order.model");
+            setTrustedPackages("com.backend.player.model");
         }});
         return converter;
     }

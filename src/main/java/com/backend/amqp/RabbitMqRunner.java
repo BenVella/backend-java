@@ -24,8 +24,8 @@ public class RabbitMqRunner implements CommandLineRunner {
     public void run(String... args) throws Exception {
         System.out.println("Sending message...");
         rabbitTemplate.convertAndSend(
-                MessagingConfig.topicExchangeName, "orders.pending.default", "Message test");
-        receiver.getLatch().await(10000, TimeUnit.MILLISECONDS);
+                MessagingConfig.topicExchangeName, "players.pending.default", "Message test");
+        receiver.getLatch().await(5000, TimeUnit.MILLISECONDS);
     }
 
 }
