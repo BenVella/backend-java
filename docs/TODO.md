@@ -1,6 +1,9 @@
 ﻿# Todo
 
-Tasks that should be done... in some order
+## Up next
+
+- restore deleted player profile
+- tests for player package
 
 ## Authentication
 

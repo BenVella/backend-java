@@ -3,6 +3,11 @@
 This runs with latest up top.  For whoever might be reviewing this, while this was spread over several days,
 it rarely exceeded 15 mins at a time before an interruption stepped in.  Suffice to say this is not even close to half way done.
 
+## 19/04/2025
+
+- Added player create and delete
+- Proper configuration of postgres for two dbs to separate keycloak from app
+
 ## 18/04/2025
 
 - Introducing the `com.backend.player` package
