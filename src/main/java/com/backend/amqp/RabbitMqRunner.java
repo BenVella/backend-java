@@ -3,6 +3,7 @@ package com.backend.amqp;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
  * A temporary implementation of CommandLineRunner for output visualisation
  */
 @Component
+@ConditionalOnProperty(name = "app.messaging.enabled", havingValue = "true", matchIfMissing = true)
 public class RabbitMqRunner implements CommandLineRunner {
 
     private final RabbitTemplate rabbitTemplate;

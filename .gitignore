@@ -1,7 +1,11 @@
 HELP.md
-.gradle
+.gradle/
 build/
-!gradle/wrapper/gradle-wrapper.jar
+target/
+
+# Project-local vendored Maven repository
+.mvn/local-repo/
+
 !**/src/main/**/build/
 !**/src/test/**/build/
 

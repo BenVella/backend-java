@@ -10,13 +10,16 @@ services:
       rabbitmq:
         condition: service_healthy
       keycloak:
-        condition: service_started
+        condition: service_healthy
     environment:
-      SPRING_RABBITMQ_HOST: rabbitmq
-      SPRING_RABBITMQ_PORT: 5672
-      SPRING_RABBITMQ_USERNAME: guest
-      SPRING_RABBITMQ_PASSWORD: guest
-      KEYCLOAK_ISSUER_URI: http://keycloak:8090/realms/myrealm
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+      RABBITMQ_USERNAME: guest
+      RABBITMQ_PASSWORD: guest
+      KEYCLOAK_ISSUER_URI: http://keycloak:8080/realms/backend-java
+      KEYCLOAK_CLIENT_ID: order-taking-api
+      KEYCLOAK_REQUIRED_AUDIENCE: order-taking-api
+      KEYCLOAK_ALLOWED_AUTHORIZED_PARTIES: order-taking-api-cli
 
   rabbitmq:
     image: rabbitmq:management
@@ -31,22 +34,35 @@ services:
       test: ["CMD", "rabbitmq-diagnostics", "ping"]
       interval: 10s
       timeout: 5s
+      retries: 10
 
   keycloak:
-    image: quay.io/keycloak/keycloak:latest
+    image: quay.io/keycloak/keycloak:26.5.1
     container_name: keycloak
     environment:
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin
+      KC_BOOTSTRAP_ADMIN_USERNAME: admin
+      KC_BOOTSTRAP_ADMIN_PASSWORD: admin
       KC_DB: postgres
       KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
       KC_DB_USERNAME: keycloak
       KC_DB_PASSWORD: password
+      KC_HEALTH_ENABLED: "true"
+      KC_METRICS_ENABLED: "true"
+      KC_HTTP_ENABLED: "true"
+      KC_HOSTNAME_STRICT: "false"
     ports:
-      - "8090:8090"
+      - "8090:8080"
     depends_on:
-      - postgres
-    command: start-dev --http-port=8090
+      postgres:
+        condition: service_healthy
+    command: start-dev --http-port=8080 --import-realm
+    volumes:
+      - ./docker/keycloak/realm-import:/opt/keycloak/data/import:ro
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c '</dev/tcp/127.0.0.1/8080'"]
+      interval: 10s
+      timeout: 5s
+      retries: 20
 
   postgres:
     image: postgres:latest
@@ -57,3 +73,8 @@ services:
       POSTGRES_PASSWORD: password
     ports:
       - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U keycloak -d keycloak"]
+      interval: 10s
+      timeout: 5s
+      retries: 10

@@ -1,19 +1,17 @@
 spring:
-  profiles:
-    active: secrets
   application:
     name: order-taking-api
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8090/realms/myrealm}
+          issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8090/realms/backend-java}
 
   rabbitmq:
-    host: localhost
-    port: 5672
-    username: ${secret.rabbitmq.username}
-    password: ${secret.rabbitmq.password}
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
 
 management:
   endpoints:
@@ -40,3 +38,11 @@ logging:
         security: info
         web: info
         boot: info
+
+app:
+  security:
+    keycloak:
+      client-id: ${KEYCLOAK_CLIENT_ID:order-taking-api}
+      required-audience: ${KEYCLOAK_REQUIRED_AUDIENCE:order-taking-api}
+      allowed-authorized-parties: ${KEYCLOAK_ALLOWED_AUTHORIZED_PARTIES:order-taking-api-cli}
+      principal-claim: ${KEYCLOAK_PRINCIPAL_CLAIM:preferred_username}

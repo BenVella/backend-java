@@ -20,4 +20,4 @@ if [[ "$current_java_version" != *'"21.'* ]] && [[ "$current_java_version" != *'
 fi
 
 java -version
-./gradlew test --no-daemon
+./mvnw test

@@ -2,76 +2,50 @@
 
 ## Introduction
 
-This project is an Order Taking and Fulfilment API implemented using Spring Boot. It's final version is targeting to provide logic for accepting, validating, and processing orders, as well as order approval and fulfilment secured behind an authentication system.
-
-It's more of a prototype / proof of concept / spring boot playground.  Don't bet your life on it, unless it ain't worth much :)
+This project is an Order Taking and Fulfilment API implemented using Spring Boot. The current priority is a stable Maven build and a production-grade Keycloak-backed stateless auth baseline.
 
 **_Remember to check the docs folder for additional documentation with useful info._**
 
 ## Features and notes
 
-- Gradle build with docker-compose
+- Maven build with Maven Wrapper support
 - Authentication uses Keycloak + JWT Resource Server validation (see `docs/wiki/auth.md`)
+- Audience validation is enforced for API tokens
+- Authorized-party validation is enforced so only approved OAuth clients can call the API
 - Docker compose
   - rabbitmq, for eventual integration of amqp
-  - keycloak for the targeted auth system once setup
-    - this also connects to postgres
+  - keycloak + postgres for local auth verification
 - orders api requests to rabbitMq or kafka (todo)
   - Some structure is present under `com.backend.order`, but requires proper hookup
   - The structure should demonstrate the general flow of code, which should evolve as more functionality would be brought in
 
 ## Execution Requirements
 
-- Java 21 (recommended for Gradle compatibility in this project)
-  - Suggested to install via sdkman (not super stable on Windows)
-  - If your default JVM is newer (e.g. Java 25), set `JAVA_HOME` to Java 21 before running Gradle
+- Java 21
+- Maven 3.9+ or the checked-in Maven Wrapper
 - Docker Desktop
-- Create a `src/main/resources/application-secrets.yml` file with the below contents (replace as necessary)
-
-  ```yml
-  secret:
-    rabbitmq:
-      username: <USERNAME>
-      password: <PASSWORD>
-  ```
-  
-Since these are naively setup in `docker-compose.yml` currently, you can check there to find out the details
 
 # Getting Started
 
-This only covers local development commands.  It's an unfinished project acting as a preview.
-
-- Note that I elected to move away from multistage docker builds since the convenience was just costing a lot of time in containerisation.
-- Proper devops would typically require the build to happen outside of docker, and docker would only be used to execute the built JAR
-
 ## Suggested
 
-Simply running spring boot should see you sorted, so long as you have a Docker Engine running.  This should provide with better coloring and a generally convenient way to run and re-run your apps.
-
-
-## Alternative Approach
-
-If you encounter issues, don't have IntelliJ at hand and can't quite setup another IDE to this for you, the manual approach is as follows.
-
-To avoid multistage docker files and only build when necessary, you must build before composing.
+Build the application jar and bring up the local stack:
 
   ```shell
-  ./gradlew clean build
+  ./scripts/build.sh
   docker-compose up
-  ``` 
+  ```
 
-### Alternative
+Run the test suite:
 
-If you want to stick to the terminal, or hate colors in IntelliJ you could:
-
-- `./gradlew clean build` normally
-- From `build.gradle.kts`, strip out the implementation `spring-boot-docker-compose` entry (this will conflict otherwise)
-- Use `docker-compose up` to run it through compose.
+```shell
+./scripts/test.sh
+```
 
 # Deployment Notes
 
 - Security details and credentials should all be migrated to a secret manager (such as [Google Secret Manager](https://cloud.google.com/secret-manager/docs/configuring-secret-manager)) and retrieved that way
-- A dedicated and better configured authentication to fit available resources should be used instead.
+- Keycloak should run with production TLS, hostname, and secret-management settings outside `start-dev`.
 
 ### Direct Docker build (No compose)
 
@@ -92,9 +66,11 @@ Authentication is standardized on **Keycloak + JWT Resource Server**.
 
 - Public endpoints: `/api/ping`, `/helloGuest`, and actuator health probes.
 - Secured endpoints: `/helloUser` and `/helloAdmin` with role-based access control.
+- Access tokens must contain the configured audience for this API.
+- Access tokens must come from an allowed OAuth client (`azp` validation).
 - API returns JSON 401/403 responses for auth failures.
 
-See `docs/wiki/auth.md` for details.
+See `docs/wiki/auth.md` for the application contract and `docs/wiki/auth-keycloak.md` for the Keycloak setup and token flow.
 
 # Ordering API
 
@@ -105,14 +81,12 @@ Also a WIP.  Placed some skeleton structure.
 - Generally speaking however, API work is quite straightforward and "boring"
 - Would absolutely use an Open API Spec 3.0 for documenting (even if just for internal use only)
 
-# OpenAPI and endpoint generation
+# Build Notes
 
-The project now uses an **OpenAPI 3 contract-first workflow** for endpoint documentation and server stub generation.
+The previous Gradle/OpenAPI generation path has been stepped over in favor of the Maven and security migration.
 
-- Contract file: `src/main/resources/openapi/order-taking-api.yaml`
-- Generate Spring interfaces/models: `./scripts/openapi-generate.sh`
-- Validate OpenAPI contract: `./scripts/openapi-validate.sh`
-- Swagger UI (when app is running): `/swagger-ui/index.html`
-- Raw OpenAPI docs endpoint: `/v3/api-docs`
+- Runtime OpenAPI docs remain available through Springdoc:
+  - Swagger UI: `/swagger-ui/index.html`
+  - Raw docs endpoint: `/v3/api-docs`
 
-Security scheme in the OpenAPI contract is configured as JWT Bearer and aligned with the existing resource server setup.
+The static OpenAPI contract can be revisited after the Maven/auth baseline is stable.
