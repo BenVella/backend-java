@@ -3,7 +3,7 @@
 ## Foundation
 - [x] PR build/test workflow
 - [x] Strip order prototype into a neutral game-backend baseline
-- OpenAPI-first contract generation
+- [x] OpenAPI-first contract generation
 - Agent-enable project workflows
 
 ## Platform

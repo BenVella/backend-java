@@ -1,5 +1,6 @@
 package com.backend.security;
 
+import com.backend.api.ApiErrorResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -10,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import java.io.IOException;
 import java.time.Instant;
-import java.util.Map;
 
 @Component
 public class JsonAccessDeniedHandler implements AccessDeniedHandler {
@@ -30,12 +30,12 @@ public class JsonAccessDeniedHandler implements AccessDeniedHandler {
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 
-        objectMapper.writeValue(response.getOutputStream(), Map.of(
-                "timestamp", Instant.now().toString(),
-                "status", HttpServletResponse.SC_FORBIDDEN,
-                "error", "Forbidden",
-                "message", "You do not have permission to access this resource",
-                "path", request.getRequestURI()
+        objectMapper.writeValue(response.getOutputStream(), new ApiErrorResponse(
+                Instant.now().toString(),
+                HttpServletResponse.SC_FORBIDDEN,
+                "Forbidden",
+                "You do not have permission to access this resource",
+                request.getRequestURI()
         ));
     }
 }

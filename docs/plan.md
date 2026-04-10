@@ -15,14 +15,15 @@ Completed:
 
 ## Phase 2: Foundation Cleanup
 
-Next:
+Completed:
 - strip prototype-only code paths
 - generalize project naming and configuration
 - keep only neutral access probes and platform primitives
+- publish the baseline OpenAPI contract through runtime docs
 
 ## Phase 3: Game Platform Modules
 
-Planned:
+Next:
 - add persistence and migration tooling
 - define core game-service contracts
 - introduce realtime transport boundaries

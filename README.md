@@ -27,6 +27,7 @@ Implemented today:
 - local Keycloak realm import for repeatable token testing
 - JWT validation with issuer, audience, and authorized-party checks
 - Maven wrapper build and PR workflow validation
+- published OpenAPI contract via `/v3/api-docs` and Swagger UI
 
 Not yet implemented:
 - game-domain modules
@@ -79,6 +80,10 @@ Public endpoints:
 Role-protected endpoints:
 - `GET /api/access/user`
 - `GET /api/access/admin`
+
+Contract endpoints:
+- `GET /v3/api-docs`
+- `GET /swagger-ui/index.html`
 
 ## Documentation Map
 
