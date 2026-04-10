@@ -16,3 +16,4 @@
 - WebSocket gameplay transport
 - Evaluate TLS 1.3 / QUIC for low-latency flows
 - Split realtime systems into isolated modules
+- Runtime redis capability

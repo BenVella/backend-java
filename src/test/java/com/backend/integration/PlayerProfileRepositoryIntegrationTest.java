@@ -6,6 +6,8 @@ import com.backend.support.PostgresIntegrationTestSupport;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.util.Optional;
 
@@ -17,6 +19,9 @@ class PlayerProfileRepositoryIntegrationTest extends PostgresIntegrationTestSupp
     @Autowired
     private PlayerProfileRepository repository;
 
+    @MockitoBean
+    private JwtDecoder jwtDecoder;
+
     @Test
     void createsAndReadsPlayerProfilesUsingPostgres() {
         PlayerProfile created = repository.create("riven-main", "Riven Main");
@@ -24,9 +29,18 @@ class PlayerProfileRepositoryIntegrationTest extends PostgresIntegrationTestSupp
         Optional<PlayerProfile> byId = repository.findById(created.id());
         Optional<PlayerProfile> byHandle = repository.findByHandle(created.handle());
 
-        assertThat(byId).contains(created);
-        assertThat(byHandle).contains(created);
+        assertThat(byId).isPresent();
+        assertThat(byHandle).isPresent();
+        assertThat(byId.orElseThrow().id()).isEqualTo(created.id());
+        assertThat(byId.orElseThrow().handle()).isEqualTo(created.handle());
+        assertThat(byId.orElseThrow().displayName()).isEqualTo(created.displayName());
+        assertThat(byHandle.orElseThrow().id()).isEqualTo(created.id());
+        assertThat(byHandle.orElseThrow().handle()).isEqualTo(created.handle());
+        assertThat(byHandle.orElseThrow().displayName()).isEqualTo(created.displayName());
         assertThat(repository.count()).isEqualTo(1);
-        assertThat(repository.findAll()).containsExactly(created);
+        assertThat(repository.findAll())
+                .singleElement()
+                .extracting(PlayerProfile::id, PlayerProfile::handle, PlayerProfile::displayName)
+                .containsExactly(created.id(), created.handle(), created.displayName());
     }
 }

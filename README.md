@@ -2,6 +2,44 @@
 
 Lean Spring Boot baseline for game-oriented backend services.
 
+## Local Run
+
+Prerequisites:
+- Java 21
+- Docker Desktop
+
+Start local dependencies:
+
+```shell
+docker compose up -d postgres keycloak
+```
+
+Run the service quietly:
+
+```shell
+./scripts/run.sh
+```
+
+Windows:
+
+```powershell
+.\scripts\run.cmd
+```
+
+Run with debugger support on port `5005`:
+
+```shell
+./scripts/run-debug.sh
+```
+
+Windows:
+
+```powershell
+.\scripts\run-debug.cmd
+```
+
+The API will be available on `http://localhost:8080`.
+
 This repository stays intentionally small and favors platform basics over premature feature work:
 - deterministic Maven builds
 - PR-based CI validation
@@ -40,11 +78,6 @@ Not yet implemented:
 - deployment automation
 
 ## Running the Project
-
-### Prerequisites
-
-- Java 21
-- Docker Desktop
 
 ### Build
 
