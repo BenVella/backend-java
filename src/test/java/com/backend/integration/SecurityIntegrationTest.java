@@ -27,6 +27,8 @@ class SecurityIntegrationTest {
         mockMvc.perform(get("/api/ping")).andExpect(status().isOk());
         mockMvc.perform(get("/helloGuest")).andExpect(status().isOk());
         mockMvc.perform(get("/actuator/health/readiness")).andExpect(status().isOk());
+        mockMvc.perform(get("/v3/api-docs")).andExpect(status().isOk());
+        mockMvc.perform(get("/swagger-ui/index.html")).andExpect(status().isOk());
     }
 
     @Test

@@ -104,3 +104,15 @@ Also a WIP.  Placed some skeleton structure.
 - Best to evolve the code alongside the necessary demands.
 - Generally speaking however, API work is quite straightforward and "boring"
 - Would absolutely use an Open API Spec 3.0 for documenting (even if just for internal use only)
+
+# OpenAPI and endpoint generation
+
+The project now uses an **OpenAPI 3 contract-first workflow** for endpoint documentation and server stub generation.
+
+- Contract file: `src/main/resources/openapi/order-taking-api.yaml`
+- Generate Spring interfaces/models: `./scripts/openapi-generate.sh`
+- Validate OpenAPI contract: `./scripts/openapi-validate.sh`
+- Swagger UI (when app is running): `/swagger-ui/index.html`
+- Raw OpenAPI docs endpoint: `/v3/api-docs`
+
+Security scheme in the OpenAPI contract is configured as JWT Bearer and aligned with the existing resource server setup.
