@@ -1,20 +1,30 @@
-﻿# Todo
+# Implementation Backlog
 
-Tasks that should be done... in some order
+## High Priority
 
-## Authentication
+- Replace placeholder order creation behavior with mapped domain data and typed responses
+- Add validation enforcement to order creation requests
+- Introduce persistent storage for orders
+- Define a consistent error contract for business and validation failures
 
-- Complete resources server based token validation for API usage
-  - JWT implementation we had relied on our own postgres and that could easily be phased out
-- Still messing with auths, Google isn't a good fit either since their JWT are most likely opaque and require introspection, which is a lot more hassle than its wort, which is a lot more hassle than its worth.
-  - The work has ended up just becoming auth prototyping with Spring Boot I suppose, Keycloak looks like the ticket but with what little time I have left it looks like this will take a fair bit longer to sort out than initially expected.
-  - Maybe bypassing auth entirely would have been the smarter choice, but it seemed like a more interesting challenge to tackle for having inbuilt authentication that can come through with docker compose.
+## Medium Priority
 
-## API Flow
+- Publish a contract-first OpenAPI specification and align controller responses to it
+- Improve messaging reliability semantics around order submission and acknowledgment
+- Add broader automated test coverage for controller, service, and messaging paths
+- Introduce CI workflow coverage for build and test execution
 
-- The API should essentially have its own module `order` that's a dedicated package as `com.backend.order`
-- Grouping operations would be in Controllers such as the OrderController which would expose client and admin facing endpoints
-- General manipulation of code takes place under the service package, each Controller having a matching service
-- A dedicated 
-- payload -> request and response objects, determining everything and introducing Open API Spec 3.0 to cover and converge on these details.
-    - `springdoc-openapi-starter-webmvc-ui` would have probably been the ticket
+## Low Priority
+
+- Expand observability beyond basic health checks
+- Add deployment manifests or infrastructure examples
+- Introduce additional domain flows beyond the current order intake baseline
+
+## Backlog Standard
+
+Items in this file should remain implementation-oriented and action-driven.
+
+Narrative notes, historical context, and design rationale belong in:
+- `README.md`
+- `docs/CHANGELIST.md`
+- `docs/PROTOTYPE_REVIEW.md`

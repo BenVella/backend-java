@@ -1,10 +1,12 @@
 # Authentication and Authorization
 
-## Current Standard
+## Overview
 
-This service uses **Keycloak as the Identity Provider** and validates bearer JWTs with Spring Security OAuth2 Resource Server support.
+This service is a stateless OAuth2 resource server backed by Keycloak-issued JWT access tokens.
 
-### Token validation
+The security model is designed around production-style validation rules rather than simple bearer-token acceptance. A token is only accepted when it is cryptographically valid and clearly intended for this API.
+
+## Token Validation Contract
 
 Every accepted token must satisfy all of the following:
 - valid signature
@@ -13,65 +15,71 @@ Every accepted token must satisfy all of the following:
 - configured audience for this API
 - allowed authorized party (`azp`) for this API
 
-The relevant configuration is:
+Relevant configuration:
 - `KEYCLOAK_ISSUER_URI`
 - `KEYCLOAK_CLIENT_ID`
 - `KEYCLOAK_REQUIRED_AUDIENCE`
 - `KEYCLOAK_ALLOWED_AUTHORIZED_PARTIES`
+- `KEYCLOAK_PRINCIPAL_CLAIM`
 
 Default local values:
 - issuer: `http://localhost:8090/realms/backend-java`
 - client id: `order-taking-api`
 - required audience: `order-taking-api`
 - allowed authorized parties: `order-taking-api-cli`
+- principal claim: `preferred_username`
 
-### Authorization model
+## Authorization Model
 
-Role-based access control is enforced from JWT claims.
-
-Authorities are mapped from:
+Spring Security authorities are derived from Keycloak claims in two places:
 - `realm_access.roles`
 - `resource_access.{KEYCLOAK_CLIENT_ID}.roles`
 
-All roles are normalized to Spring Security authorities using the `ROLE_` prefix.
+Roles are normalized to Spring Security authorities with the `ROLE_` prefix.
 
-### Endpoint access policy
-Public (no auth required):
+Examples:
+- realm role `admin` becomes `ROLE_ADMIN`
+- client role `user` becomes `ROLE_USER`
+
+## Endpoint Policy
+
+Public endpoints:
 - `GET /api/ping`
 - `GET /helloGuest`
 - `GET /actuator/health`
 - `GET /actuator/health/liveness`
 - `GET /actuator/health/readiness`
+- `GET /v3/api-docs`
+- `GET /swagger-ui/index.html`
 
-Protected:
+Role-protected endpoints:
 - `GET /helloUser` requires `ROLE_USER` or `ROLE_ADMIN`
 - `GET /helloAdmin` requires `ROLE_ADMIN`
-- everything else requires authentication
 
-### Error handling
-Security failures return JSON responses:
-- **401 Unauthorized** when token is missing/invalid
-- **403 Forbidden** when token is valid but lacks required role
+Authenticated endpoints:
+- all remaining routes require a valid bearer token
 
-## Health and readiness
-The service exposes Actuator health probes:
-- Liveness: `/actuator/health/liveness`
-- Readiness: `/actuator/health/readiness`
+## Failure Handling
 
-This is the production-standard baseline and should be preferred over custom-only health routes.
+Authentication and authorization failures return JSON responses rather than framework-default HTML.
 
-## Why This Matters
+- `401 Unauthorized`: token missing, malformed, expired, or failing validation
+- `403 Forbidden`: token valid, but lacking required authority
 
-Issuer-only validation is not enough for a production resource server in a shared identity domain.
+This keeps API behavior predictable for clients and is a cleaner operational default for non-browser consumers.
 
-Audience validation prevents the API from accepting tokens that were minted for a different client or downstream service under the same Keycloak realm.
+## Why Audience and Authorized-Party Validation Matter
 
-Authorized-party validation lets the API restrict which OAuth clients are allowed to present those tokens, which is useful when a realm serves multiple frontends or automation clients.
+Issuer validation alone is not enough in a shared identity domain.
 
-## Keycloak Operations
+Audience validation ensures the token was minted for this API rather than a different downstream service. Authorized-party validation adds another control by restricting which OAuth clients are allowed to present that token to this service.
 
-See `docs/wiki/auth-keycloak.md` for:
-- the imported local realm
-- local test credentials
-- token acquisition examples
-- production deployment notes
+Together, those checks reduce the risk of accepting tokens that are technically valid but operationally out of scope.
+
+## Operational Notes
+
+- The service is stateless. No server-side session is created.
+- CSRF is disabled because the API is designed for bearer-token usage rather than browser session workflows.
+- Health probes are exposed through Actuator and intended for platform readiness and liveness checks.
+
+For realm shape, local users, and token acquisition examples, see [auth-keycloak.md](auth-keycloak.md).

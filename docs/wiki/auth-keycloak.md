@@ -1,23 +1,28 @@
 # Keycloak Setup and Operations Guide
 
-This guide documents the Keycloak shape expected by the application after the Maven migration and security hardening pass.
+## Purpose
 
-## Security Model
+This document describes the Keycloak configuration expected by the application, both for local development and for the production-style security posture implemented in the service.
 
-- The API is a stateless OAuth2 resource server.
-- Token signature and issuer are validated by Spring Security.
-- Token audience is also validated, so the access token must explicitly target this API.
-- Token authorized party (`azp`) is also validated, so only approved OAuth clients can call this API.
-- Authorities are derived from:
-  - `realm_access.roles`
-  - `resource_access.{client-id}.roles`
+The local stack is intentionally designed to make auth behavior repeatable: realm import, test users, expected claims, and client structure are all defined up front.
 
-The API client id defaults to `order-taking-api`.
-The allowed authorized party defaults to `order-taking-api-cli`.
+## Security Expectations
+
+The API operates as a stateless OAuth2 resource server.
+
+Required token characteristics:
+- valid Keycloak issuer
+- audience including `order-taking-api`
+- authorized party (`azp`) matching an allowed client
+- realm and client role claims used for RBAC
+
+Default application values:
+- API client id: `order-taking-api`
+- allowed authorized party: `order-taking-api-cli`
 
 ## Local Stack
 
-The local `docker-compose.yml` imports a ready-to-use realm from `docker/keycloak/realm-import/backend-java-realm.json`.
+`docker-compose.yml` imports the local realm from `docker/keycloak/realm-import/backend-java-realm.json`.
 
 Local endpoints:
 - API: `http://localhost:8080`
@@ -28,25 +33,27 @@ Bootstrap admin credentials:
 - username: `admin`
 - password: `admin`
 
-Imported test users:
-- `api-user` / `password`
-- `api-admin` / `password`
-
-These credentials are for local development only.
+These admin credentials are for local development only.
 
 ## Imported Realm
 
-The imported realm is named `backend-java`.
+Realm name:
+- `backend-java`
+
+Imported users:
+- `api-user` / `password`
+- `api-admin` / `password`
 
 Imported clients:
 - `order-taking-api`
-  - represents the protected API
-  - expected audience for access tokens
+  - represents the protected resource
+  - expected audience for accepted access tokens
+  - configured as bearer-only
 - `order-taking-api-cli`
-  - local-only client used to obtain test tokens
-  - configured with direct access grants for easy local verification
+  - local development client for acquiring test tokens
+  - enabled for direct access grants to simplify manual verification
 
-## Obtaining a Test Token
+## Obtaining a Token
 
 User token:
 
@@ -72,8 +79,9 @@ curl -s \
   -d "password=password"
 ```
 
-The resulting access token should contain `aud: ["order-taking-api", ...]`.
-The resulting access token should also contain `azp: "order-taking-api-cli"`.
+Expected claims in the resulting access token:
+- `aud` includes `order-taking-api`
+- `azp` equals `order-taking-api-cli`
 
 ## Using the Token
 
@@ -84,9 +92,13 @@ curl -H "Authorization: Bearer <ACCESS_TOKEN>" http://localhost:8080/helloAdmin
 
 ## Production Guidance
 
-- Do not run Keycloak with `start-dev` in production.
-- Use HTTPS, a stable hostname, and externalized secrets.
-- Keep audience validation enabled.
-- Keep authorized-party validation enabled and scoped to the real interactive or automation clients that should reach the API.
-- Disable direct access grants for real clients unless there is a specific operational reason.
-- Prefer a dedicated interactive client for human login flows and a separate API client for the protected resource.
+For production-style deployment:
+- do not run Keycloak with `start-dev`
+- use HTTPS and a stable external hostname
+- externalize secrets and bootstrap credentials
+- keep audience validation enabled
+- keep authorized-party validation enabled and scoped to approved clients
+- separate interactive clients from protected-resource clients
+- disable direct access grants unless there is a specific operational need
+
+The local realm is deliberately simple. The production posture should keep the same validation principles while moving credentials, TLS, and operational settings into deployment-specific infrastructure.

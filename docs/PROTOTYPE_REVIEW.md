@@ -1,75 +1,37 @@
-# Prototype Review: Scope, Purpose, and Notable Shortcomings
+# Current Implementation Assessment
 
-## Overall Scope and Purpose
+## Summary
 
-This codebase is a **Spring Boot prototype** for an order-taking backend that explores three main concerns:
+This repository now presents a strong backend platform baseline:
+- deterministic Maven builds
+- stateless Keycloak-backed API security
+- a repeatable local infrastructure topology
+- clear separation between public, authenticated, and role-restricted endpoints
 
-1. **Order API shape and package structure** (`com.backend.order`) for request intake and future orchestration.
-2. **Auth strategy experimentation** (legacy JWT, OAuth2, and current Keycloak-focused resource-server setup).
-3. **Asynchronous messaging integration** via RabbitMQ as a stand-in for eventual fulfillment/event-driven flows.
+The main work still ahead is domain maturity rather than platform basics. Security and build posture are already substantially stronger than the order workflow itself.
 
-The project appears intentionally framed as an exploratory playground rather than production-ready software.
+## What Is Solid Today
 
-## What Exists Today (Prototype Baseline)
+- Maven-based build and packaging flow
+- Keycloak realm integration for local verification
+- JWT validation hardened with issuer, audience, and authorized-party checks
+- role mapping from Keycloak realm and client claims
+- actuator health probes and JSON auth failure handling
 
-- Basic Spring Boot app skeleton and Gradle setup (Java 21, Spring Boot 3.4.x).
-- Starter security wiring with role-based route guards and a custom JWT auth converter.
-- Initial order controller/service/request models with placeholder business logic.
-- RabbitMQ config and test-like message path for verifying queue publish/listen behavior.
-- Docker Compose stack including app + RabbitMQ + Keycloak + Postgres for local experiments.
-- Minimal test scaffolding (`@SpringBootTest` context test only).
+## What Is Still Early-Stage
 
-## Notable Prototype-Phase Shortcomings
+- order persistence
+- request-to-domain mapping depth
+- typed business responses for order operations
+- durable eventing semantics around fulfillment workflows
+- broader test coverage outside the current security baseline
 
-### 1) Domain and persistence are largely stubs
-- `Order` is a plain model with string fields and no persistence annotations/repository.
-- `OrderDao` exists only as an empty placeholder.
-- `getOrderById` returns a new empty object instead of fetching data.
+## Assessment
 
-### 2) Controller contract and validation are incomplete
-- `createOrder` accepts request body but does not use `@Valid` despite validation annotations in payloads.
-- Response is a plain success string rather than a structured response with order id/status/errors.
-- Type mismatch risk: controller path variable is `Long`, while model id is `String`.
+From a portfolio perspective, this repository already demonstrates sound engineering judgment in areas that are frequently weak in early-stage projects:
+- reproducible builds
+- explicit security boundaries
+- environment-aware configuration
+- local developer operability
 
-### 3) Business logic is not implemented yet
-- Service method builds an empty `Order` without mapping request fields.
-- No order lifecycle/status tracking, deduplication/idempotency, or conflict handling.
-- No explicit error model (4xx/5xx mapping, validation problem details, etc.).
-
-### 4) Messaging flow is proof-of-concept only
-- `CountDownLatch` in singleton receiver is not reset safely for repeated/parallel requests.
-- Service waits synchronously on message acknowledgment, which undermines async design.
-- Message payload typing/schema/versioning and dead-letter/retry behavior are not defined.
-
-### 5) Security integration needs hardening and cleanup
-- Security config class contains `@GetMapping` endpoints (mixes configuration and controller concerns).
-- Every route currently requires auth; no explicit public health/info endpoints for ops.
-- Debug/security logging is enabled in config, which is unsafe/noisy for non-dev environments.
-- Token/issuer setup appears split between client/resource-server experiments and may be partially stale.
-
-### 6) Environment and operability gaps
-- Compose/config ports appear inconsistent for Keycloak references vs exposed ports.
-- Secrets strategy is local-file based; no profile-based production secret handling is implemented.
-- Dockerfile assumes pre-built JAR path/name and includes compose file in runtime image unnecessarily.
-
-### 7) Test coverage is near-zero
-- No unit tests for mapping/validation/business rules.
-- No controller tests for request/response and status codes.
-- No integration tests for auth behavior or RabbitMQ publishing path.
-
-### 8) API maturity/documentation gaps
-- No OpenAPI/Swagger contract generated, despite TODO intent.
-- No API versioning strategy, pagination/filtering patterns, or standardized error envelope.
-
-## Prototype-Appropriate Next Priorities
-
-1. Add persistence baseline (JPA entity/repository + migration tooling + seeded local DB).
-2. Complete API contract (`@Valid`, DTO mapping, typed responses, consistent ids, RFC7807 errors).
-3. Separate synchronous order creation from async fulfillment events (outbox or durable publish strategy).
-4. Refactor security boundaries (config vs controller separation; add health/actuator policy).
-5. Introduce practical test pyramid (unit + web slice + integration with Testcontainers).
-6. Publish OpenAPI spec and align request/response/error contracts to it.
-
-## Bottom Line
-
-As a prototype, this repository successfully demonstrates architectural direction and technology evaluation. The main limitation is that most core capabilities (persistence, business rules, robust API contracts, reliable messaging, and test coverage) are still scaffolding-level and need implementation before any production-style usage.
+The next step is to bring the order domain up to the same standard as the platform layer.

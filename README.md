@@ -1,92 +1,139 @@
-# Order Taking and Fulfilment API
+# Order Taking API
 
-## Introduction
+Production-oriented Spring Boot service baseline for an order intake backend.
 
-This project is an Order Taking and Fulfilment API implemented using Spring Boot. The current priority is a stable Maven build and a production-grade Keycloak-backed stateless auth baseline.
+This repository focuses on the engineering foundations that matter early in a backend service lifecycle:
+- deterministic Maven builds
+- stateless OAuth2 resource-server security with Keycloak
+- role-based access control backed by JWT claims
+- local infrastructure wiring for application, identity, and messaging dependencies
+- operational basics such as health probes and structured auth failure responses
 
-**_Remember to check the docs folder for additional documentation with useful info._**
+The order domain itself is still intentionally lightweight. The current value of the repository is the platform baseline: build reproducibility, security posture, local operability, and a service structure that can be expanded into a fuller order workflow.
 
-## Features and notes
-
-- Maven build with Maven Wrapper support
-- Authentication uses Keycloak + JWT Resource Server validation (see `docs/wiki/auth.md`)
-- Audience validation is enforced for API tokens
-- Authorized-party validation is enforced so only approved OAuth clients can call the API
-- Docker compose
-  - rabbitmq, for eventual integration of amqp
-  - keycloak + postgres for local auth verification
-- orders api requests to rabbitMq or kafka (todo)
-  - Some structure is present under `com.backend.order`, but requires proper hookup
-  - The structure should demonstrate the general flow of code, which should evolve as more functionality would be brought in
-
-## Execution Requirements
+## Technology Stack
 
 - Java 21
-- Maven 3.9+ or the checked-in Maven Wrapper
+- Spring Boot 3.4
+- Maven 3.9.14
+- Spring Security OAuth2 Resource Server
+- Keycloak
+- RabbitMQ
+- Springdoc / OpenAPI runtime docs
+- Docker Compose
+
+## Engineering Highlights
+
+- Maven Wrapper based build and packaging flow
+- Stateless JWT validation with issuer, audience, and authorized-party (`azp`) enforcement
+- Keycloak role mapping from both realm and client claims
+- JSON 401 and 403 responses for predictable API failure handling
+- Local Compose topology for application, Keycloak, PostgreSQL, and RabbitMQ
+- Actuator health endpoints enabled for liveness and readiness probing
+
+## Current Scope
+
+Implemented today:
+- public and secured example endpoints for authentication and authorization verification
+- order API scaffolding under `com.backend.order`
+- local Keycloak realm import for repeatable token-based testing
+- messaging wiring for order-event experimentation via RabbitMQ
+
+Not yet complete:
+- persistent order storage
+- mature order lifecycle and business rules
+- contract-first OpenAPI generation pipeline
+- CI/CD and deployment automation
+
+That boundary is intentional. The repository already demonstrates a production-ready security and build baseline, while leaving room to extend the business domain in subsequent iterations.
+
+## Security Model
+
+Authentication is standardized on Keycloak-backed bearer tokens.
+
+Every accepted token must satisfy:
+- valid signature
+- valid issuer
+- valid timestamps
+- expected audience for this API
+- allowed authorized party (`azp`)
+
+Authorization is enforced through Spring Security roles derived from:
+- `realm_access.roles`
+- `resource_access.{client-id}.roles`
+
+See [auth.md](docs/wiki/auth.md) for the application-level security contract and [auth-keycloak.md](docs/wiki/auth-keycloak.md) for Keycloak setup and token flow.
+
+## Running the Project
+
+### Prerequisites
+
+- Java 21
 - Docker Desktop
 
-# Getting Started
+### Build
 
-## Suggested
+Package build:
 
-Build the application jar and bring up the local stack:
+```shell
+./scripts/build.sh
+```
 
-  ```shell
-  ./scripts/build.sh
-  docker-compose up
-  ```
+### Test
 
-Run the test suite:
+Test run:
 
 ```shell
 ./scripts/test.sh
 ```
 
-# Deployment Notes
+### Local Infrastructure
 
-- Security details and credentials should all be migrated to a secret manager (such as [Google Secret Manager](https://cloud.google.com/secret-manager/docs/configuring-secret-manager)) and retrieved that way
-- Keycloak should run with production TLS, hostname, and secret-management settings outside `start-dev`.
+Bring up the local stack:
 
-### Direct Docker build (No compose)
+```shell
+docker compose up -d --build
+```
 
-This is still partially todo, this project isn't really intended for production use and use at your own discretion.
+The local stack includes:
+- the API on `http://localhost:8080`
+- Keycloak on `http://localhost:8090`
+- RabbitMQ Management UI on `http://localhost:15672`
 
-For production, you don't want to use the included postgres / rabbitMq deployments but manage them separately and bind to them
+Note: Docker Desktop must be running before `docker compose up`.
 
-(Some additional work and reconfiguration would be required for this)
+## API and Operational Endpoints
 
-- Run the container
-    ```sh
-    docker run -d -p 8080:8080 orders-app:1.0
-    ```
-  
-# Authentication
+Public endpoints:
+- `GET /api/ping`
+- `GET /helloGuest`
+- `GET /actuator/health`
+- `GET /actuator/health/liveness`
+- `GET /actuator/health/readiness`
+- `GET /v3/api-docs`
+- `GET /swagger-ui/index.html`
 
-Authentication is standardized on **Keycloak + JWT Resource Server**.
+Secured endpoints:
+- `GET /helloUser`
+- `GET /helloAdmin`
+- `POST /api/orders`
+- `GET /api/orders/{orderId}`
 
-- Public endpoints: `/api/ping`, `/helloGuest`, and actuator health probes.
-- Secured endpoints: `/helloUser` and `/helloAdmin` with role-based access control.
-- Access tokens must contain the configured audience for this API.
-- Access tokens must come from an allowed OAuth client (`azp` validation).
-- API returns JSON 401/403 responses for auth failures.
+## Documentation Map
 
-See `docs/wiki/auth.md` for the application contract and `docs/wiki/auth-keycloak.md` for the Keycloak setup and token flow.
+- [docs/wiki/auth.md](docs/wiki/auth.md): application security contract
+- [docs/wiki/auth-keycloak.md](docs/wiki/auth-keycloak.md): Keycloak realm, clients, and token flow
+- [docs/plan.md](docs/plan.md): delivery roadmap
+- [docs/TODO.md](docs/TODO.md): implementation backlog
+- [docs/CHANGELIST.md](docs/CHANGELIST.md): engineering milestones
+- [docs/PROTOTYPE_REVIEW.md](docs/PROTOTYPE_REVIEW.md): current implementation assessment
 
-# Ordering API
+## Portfolio Positioning
 
-Also a WIP.  Placed some skeleton structure.
+This repository is strongest as a demonstration of backend platform engineering judgment:
+- secure-by-default API integration with an external identity provider
+- deterministic local build execution
+- practical local infrastructure orchestration
+- clear separation between production-oriented foundations and incomplete business-domain work
 
-- I suppose the devil is in the details for APIs, it's easy to over or under engineer them and make a mess.
-- Best to evolve the code alongside the necessary demands.
-- Generally speaking however, API work is quite straightforward and "boring"
-- Would absolutely use an Open API Spec 3.0 for documenting (even if just for internal use only)
-
-# Build Notes
-
-The previous Gradle/OpenAPI generation path has been stepped over in favor of the Maven and security migration.
-
-- Runtime OpenAPI docs remain available through Springdoc:
-  - Swagger UI: `/swagger-ui/index.html`
-  - Raw docs endpoint: `/v3/api-docs`
-
-The static OpenAPI contract can be revisited after the Maven/auth baseline is stable.
+That distinction matters. Mature engineering is not just about shipping features; it is also about establishing build, security, and operational constraints that let a service scale safely.
