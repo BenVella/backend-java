@@ -87,7 +87,7 @@ Test run:
 ./scripts/test.sh
 ```
 
-GitHub Actions also runs the Maven build and test workflow automatically on every push and pull request.
+GitHub Actions also runs the Maven build and test workflow automatically for pull requests.
 
 ### Local Infrastructure
 
