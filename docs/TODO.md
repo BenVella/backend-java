@@ -1,30 +1,17 @@
-# Implementation Backlog
+# Game Backend Backlog
 
-## High Priority
+## Foundation
+- [x] PR build/test workflow
+- Generalise the service baseline beyond the order API
+- OpenAPI-first contract generation
+- Agent-enable project workflows
 
-- Replace placeholder order creation behavior with mapped domain data and typed responses
-- Add validation enforcement to order creation requests
-- Introduce persistent storage for orders
-- Define a consistent error contract for business and validation failures
+## Platform
+- Postgres schema and persistence
+- External OAuth/OpenID support
+- Async leaderboard support
 
-## Medium Priority
-
-- Publish a contract-first OpenAPI specification and align controller responses to it
-- Improve messaging reliability semantics around order submission and acknowledgment
-- Add broader automated test coverage for controller, service, and messaging paths
-- Introduce CI workflow coverage for build and test execution
-
-## Low Priority
-
-- Expand observability beyond basic health checks
-- Add deployment manifests or infrastructure examples
-- Introduce additional domain flows beyond the current order intake baseline
-
-## Backlog Standard
-
-Items in this file should remain implementation-oriented and action-driven.
-
-Narrative notes, historical context, and design rationale belong in:
-- `README.md`
-- `docs/CHANGELIST.md`
-- `docs/PROTOTYPE_REVIEW.md`
+## Realtime
+- WebSocket gameplay transport
+- Evaluate TLS 1.3 / QUIC for low-latency flows
+- Split realtime systems into isolated modules
