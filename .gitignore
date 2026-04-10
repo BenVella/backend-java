@@ -1,7 +1,10 @@
 HELP.md
-.gradle
-build/
-!gradle/wrapper/gradle-wrapper.jar
+.gradle/
+target/
+
+# Project-local vendored Maven repository (optional, do not commit by default)
+.mvn/local-repo/
+
 !**/src/main/**/build/
 !**/src/test/**/build/
 

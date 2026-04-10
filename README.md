@@ -10,13 +10,8 @@ It's more of a prototype / proof of concept / spring boot playground.  Don't bet
 
 ## Features and notes
 
-- Gradle build with docker-compose
-- Tried various integrated Spring Boot Security options
-  - BezKoder's JWT auth (Archaic and outdated)
-  - Github and Google OAuth2
-    - Github doesn't really expose an issuer-uri 
-    - and Google's resourceserver provides opaque JWT which require introspection, making it an expensive call to support
-  - Keycloak Auth <- Current target, not quite completed since ran out of time
+- Maven build with docker-compose
+- Authentication uses Keycloak + JWT Resource Server validation (see `docs/wiki/auth.md`)
 - Docker compose
   - rabbitmq, for eventual integration of amqp
   - keycloak for the targeted auth system once setup
@@ -27,8 +22,9 @@ It's more of a prototype / proof of concept / spring boot playground.  Don't bet
 
 ## Execution Requirements
 
-- Java 21 or higher
+- Java 21 (recommended)
   - Suggested to install via sdkman (not super stable on Windows)
+  - If your default JVM is newer (e.g. Java 25), set `JAVA_HOME` to Java 21 before running Maven
 - Docker Desktop
 - Create a `src/main/resources/application-secrets.yml` file with the below contents (replace as necessary)
 
@@ -60,7 +56,7 @@ If you encounter issues, don't have IntelliJ at hand and can't quite setup anoth
 To avoid multistage docker files and only build when necessary, you must build before composing.
 
   ```shell
-  ./gradlew clean build
+  ./scripts/build.sh
   docker-compose up
   ``` 
 
@@ -68,9 +64,8 @@ To avoid multistage docker files and only build when necessary, you must build b
 
 If you want to stick to the terminal, or hate colors in IntelliJ you could:
 
-- `./gradlew clean build` normally
-- From `build.gradle.kts`, strip out the implementation `spring-boot-docker-compose` entry (this will conflict otherwise)
-- Use `docker-compose up` to run it through compose.
+- `./scripts/build.sh`
+- Use `docker-compose up` to run support services and app together.
 
 # Deployment Notes
 
@@ -92,11 +87,13 @@ For production, you don't want to use the included postgres / rabbitMq deploymen
   
 # Authentication
 
-Still a WIP.  It seemed like a worthwhile challenge to focus on
+Authentication is standardized on **Keycloak + JWT Resource Server**.
 
-- Tried BezKoder's JWT (which worked but was severely outdated)
-- OAuth Github and Google but ditched for excessive complexity and heavy limitations
-- Keycloak - still to fully implement but ran out of time
+- Public endpoints: `/api/ping`, `/helloGuest`, and actuator health probes.
+- Secured endpoints: `/helloUser` and `/helloAdmin` with role-based access control.
+- API returns JSON 401/403 responses for auth failures.
+
+See `docs/wiki/auth.md` for details.
 
 # Ordering API
 
@@ -106,3 +103,13 @@ Also a WIP.  Placed some skeleton structure.
 - Best to evolve the code alongside the necessary demands.
 - Generally speaking however, API work is quite straightforward and "boring"
 - Would absolutely use an Open API Spec 3.0 for documenting (even if just for internal use only)
+
+## Vendored local Maven repository
+
+This project is configured to use a **project-local Maven repository** at `.mvn/local-repo` via `.mvn/maven.config`.
+
+- One-time online prefetch: `./scripts/vendor-maven-repo.sh`
+- Offline test run after prefetch: `mvn -o test`
+- Offline package after prefetch: `mvn -o -DskipTests package`
+
+For enterprise environments, prefer pointing Maven to an internal mirror (Nexus/Artifactory) in your user/global `settings.xml`.
