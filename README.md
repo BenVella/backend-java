@@ -43,7 +43,7 @@ Not yet complete:
 - persistent order storage
 - mature order lifecycle and business rules
 - contract-first OpenAPI generation pipeline
-- CI/CD and deployment automation
+- deployment automation
 
 That boundary is intentional. The repository already demonstrates a production-ready security and build baseline, while leaving room to extend the business domain in subsequent iterations.
 
@@ -86,6 +86,8 @@ Test run:
 ```shell
 ./scripts/test.sh
 ```
+
+GitHub Actions also runs the Maven build and test workflow automatically for pull requests.
 
 ### Local Infrastructure
 
