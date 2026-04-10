@@ -1,0 +1,7 @@
+- auth (keycloak, stateless jwt)
+- openapi contract with script generation and update
+- postgres db setup and modelling
+- agentification
+- security pass for secrets
+- workflows for prs
+- readme updates and local dev setup
