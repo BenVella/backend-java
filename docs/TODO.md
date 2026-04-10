@@ -1,30 +1,12 @@
 # Implementation Backlog
 
-## High Priority
+- Build pipeline for maven build and testing (no deployment for now)
+- Open Api driven spec and endpoint generation
+- Agentify the project
+- Strip the ordering api logic and generalise the project initially (we'll want a game dev capable system instead).
+- Postgres DB model setup
+- External Id open auth support
+- Basic asynchronous game leaderboard support
 
-- Replace placeholder order creation behavior with mapped domain data and typed responses
-- Add validation enforcement to order creation requests
-- Introduce persistent storage for orders
-- Define a consistent error contract for business and validation failures
-
-## Medium Priority
-
-- Publish a contract-first OpenAPI specification and align controller responses to it
-- Improve messaging reliability semantics around order submission and acknowledgment
-- Add broader automated test coverage for controller, service, and messaging paths
-- Introduce CI workflow coverage for build and test execution
-
-## Low Priority
-
-- Expand observability beyond basic health checks
-- Add deployment manifests or infrastructure examples
-- Introduce additional domain flows beyond the current order intake baseline
-
-## Backlog Standard
-
-Items in this file should remain implementation-oriented and action-driven.
-
-Narrative notes, historical context, and design rationale belong in:
-- `README.md`
-- `docs/CHANGELIST.md`
-- `docs/PROTOTYPE_REVIEW.md`
+- Websocket support for action combat and TLS1.3 (QUIK?) support for general movement / inventory / crafting / simple interaction behaviour.
+  - Construct each individual system separately:
