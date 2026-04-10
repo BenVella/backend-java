@@ -5,17 +5,9 @@ spring:
     name: order-taking-api
   security:
     oauth2:
-      client:
-        registration:
-          keycloak:
-            client-id: demo
-            scope: openid
-        provider:
-          keycloak:
-            issuer-uri: http://localhost:8080/realms/myrealm
       resourceserver:
         jwt:
-          issuer-uri: http://localhost:8080/realms/myrealm
+          issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8090/realms/myrealm}
 
   rabbitmq:
     host: localhost
@@ -23,9 +15,21 @@ spring:
     username: ${secret.rabbitmq.username}
     password: ${secret.rabbitmq.password}
 
-  mvc:
-    # Development only
-    log-request-details: true
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: never
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
 
 # Logging
 logging:
@@ -33,7 +37,6 @@ logging:
     root: info
     org:
       springframework:
-        security: debug
-        security.oauth2.client: debug
-        web: debug
+        security: info
+        web: info
         boot: info

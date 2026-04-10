@@ -11,12 +11,7 @@ It's more of a prototype / proof of concept / spring boot playground.  Don't bet
 ## Features and notes
 
 - Gradle build with docker-compose
-- Tried various integrated Spring Boot Security options
-  - BezKoder's JWT auth (Archaic and outdated)
-  - Github and Google OAuth2
-    - Github doesn't really expose an issuer-uri 
-    - and Google's resourceserver provides opaque JWT which require introspection, making it an expensive call to support
-  - Keycloak Auth <- Current target, not quite completed since ran out of time
+- Authentication uses Keycloak + JWT Resource Server validation (see `docs/wiki/auth.md`)
 - Docker compose
   - rabbitmq, for eventual integration of amqp
   - keycloak for the targeted auth system once setup
@@ -27,8 +22,9 @@ It's more of a prototype / proof of concept / spring boot playground.  Don't bet
 
 ## Execution Requirements
 
-- Java 21 or higher
+- Java 21 (recommended for Gradle compatibility in this project)
   - Suggested to install via sdkman (not super stable on Windows)
+  - If your default JVM is newer (e.g. Java 25), set `JAVA_HOME` to Java 21 before running Gradle
 - Docker Desktop
 - Create a `src/main/resources/application-secrets.yml` file with the below contents (replace as necessary)
 
@@ -92,11 +88,13 @@ For production, you don't want to use the included postgres / rabbitMq deploymen
   
 # Authentication
 
-Still a WIP.  It seemed like a worthwhile challenge to focus on
+Authentication is standardized on **Keycloak + JWT Resource Server**.
 
-- Tried BezKoder's JWT (which worked but was severely outdated)
-- OAuth Github and Google but ditched for excessive complexity and heavy limitations
-- Keycloak - still to fully implement but ran out of time
+- Public endpoints: `/api/ping`, `/helloGuest`, and actuator health probes.
+- Secured endpoints: `/helloUser` and `/helloAdmin` with role-based access control.
+- API returns JSON 401/403 responses for auth failures.
+
+See `docs/wiki/auth.md` for details.
 
 # Ordering API
 
