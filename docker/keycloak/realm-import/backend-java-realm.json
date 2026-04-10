@@ -15,7 +15,7 @@
       }
     ],
     "client": {
-      "order-taking-api": [
+      "game-backend": [
         {
           "name": "user"
         },
@@ -27,8 +27,8 @@
   },
   "clients": [
     {
-      "clientId": "order-taking-api",
-      "name": "Order Taking API",
+      "clientId": "game-backend",
+      "name": "Game Backend",
       "enabled": true,
       "protocol": "openid-connect",
       "bearerOnly": true,
@@ -40,8 +40,8 @@
       "fullScopeAllowed": false
     },
     {
-      "clientId": "order-taking-api-cli",
-      "name": "Order Taking API CLI",
+      "clientId": "game-backend-cli",
+      "name": "Game Backend CLI",
       "enabled": true,
       "protocol": "openid-connect",
       "publicClient": true,
@@ -55,13 +55,13 @@
         "email",
         "roles",
         "web-origins",
-        "order-taking-api-audience"
+        "game-backend-audience"
       ]
     }
   ],
   "clientScopes": [
     {
-      "name": "order-taking-api-audience",
+      "name": "game-backend-audience",
       "protocol": "openid-connect",
       "attributes": {
         "include.in.token.scope": "false",
@@ -69,12 +69,12 @@
       },
       "protocolMappers": [
         {
-          "name": "order-taking-api-audience-mapper",
+          "name": "game-backend-audience-mapper",
           "protocol": "openid-connect",
           "protocolMapper": "oidc-audience-mapper",
           "consentRequired": false,
           "config": {
-            "included.client.audience": "order-taking-api",
+            "included.client.audience": "game-backend",
             "id.token.claim": "false",
             "access.token.claim": "true"
           }
@@ -98,7 +98,7 @@
         "user"
       ],
       "clientRoles": {
-        "order-taking-api": [
+        "game-backend": [
           "user"
         ]
       }
@@ -119,7 +119,7 @@
         "user"
       ],
       "clientRoles": {
-        "order-taking-api": [
+        "game-backend": [
           "admin",
           "user"
         ]

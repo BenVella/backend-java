@@ -2,13 +2,14 @@
 
 ## Foundation
 - [x] PR build/test workflow
-- Generalise the service baseline beyond the order API
+- [x] Strip order prototype into a neutral game-backend baseline
 - OpenAPI-first contract generation
 - Agent-enable project workflows
 
 ## Platform
 - Postgres schema and persistence
 - External OAuth/OpenID support
+- Wire GitHub Actions secrets into delivery workflows
 - Async leaderboard support
 
 ## Realtime

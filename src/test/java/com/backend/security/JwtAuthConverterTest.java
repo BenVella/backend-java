@@ -40,12 +40,12 @@ class JwtAuthConverterTest {
             "admin,ROLE_ADMIN"
     })
     void convertsConfiguredClientRolesToSpringAuthorities(String sourceRole, String expectedAuthority) {
-        properties.setClientId("order-taking-api");
+        properties.setClientId("game-backend");
 
         Jwt jwt = Jwt.withTokenValue("token")
                 .header("alg", "none")
                 .claim("resource_access", Map.of(
-                        "order-taking-api", Map.of("roles", List.of(sourceRole)),
+                        "game-backend", Map.of("roles", List.of(sourceRole)),
                         "other-client", Map.of("roles", List.of("ignored"))
                 ))
                 .claim("preferred_username", "alice")

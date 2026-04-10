@@ -14,7 +14,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(properties = "app.messaging.enabled=false")
+@SpringBootTest
 @AutoConfigureMockMvc
 class SecurityIntegrationTest {
 
@@ -27,7 +27,7 @@ class SecurityIntegrationTest {
     @Test
     void allowsPublicEndpointsWithoutAuthentication() throws Exception {
         mockMvc.perform(get("/api/ping")).andExpect(status().isOk());
-        mockMvc.perform(get("/helloGuest")).andExpect(status().isOk());
+        mockMvc.perform(get("/api/access/public")).andExpect(status().isOk());
         mockMvc.perform(get("/actuator/health/readiness")).andExpect(status().isOk());
         mockMvc.perform(get("/v3/api-docs")).andExpect(status().isOk());
         mockMvc.perform(get("/swagger-ui/index.html")).andExpect(status().isOk());
@@ -35,29 +35,29 @@ class SecurityIntegrationTest {
 
     @Test
     void rejectsProtectedEndpointWithoutAuthentication() throws Exception {
-        mockMvc.perform(get("/helloUser"))
+        mockMvc.perform(get("/api/access/user"))
                 .andExpect(status().isUnauthorized())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(jsonPath("$.status").value(401));
     }
 
     @Test
-    void allowsHelloUserForUserRoleToken() throws Exception {
-        mockMvc.perform(get("/helloUser").with(jwt().authorities(() -> "ROLE_USER")))
+    void allowsUserAccessForUserRoleToken() throws Exception {
+        mockMvc.perform(get("/api/access/user").with(jwt().authorities(() -> "ROLE_USER")))
                 .andExpect(status().isOk());
     }
 
     @Test
-    void rejectsHelloAdminForNonAdminRoleToken() throws Exception {
-        mockMvc.perform(get("/helloAdmin").with(jwt().authorities(() -> "ROLE_USER")))
+    void rejectsAdminAccessForNonAdminRoleToken() throws Exception {
+        mockMvc.perform(get("/api/access/admin").with(jwt().authorities(() -> "ROLE_USER")))
                 .andExpect(status().isForbidden())
                 .andExpect(content().contentType("application/json"))
                 .andExpect(jsonPath("$.status").value(403));
     }
 
     @Test
-    void allowsHelloAdminForAdminRoleToken() throws Exception {
-        mockMvc.perform(get("/helloAdmin").with(jwt().authorities(() -> "ROLE_ADMIN")))
+    void allowsAdminAccessForAdminRoleToken() throws Exception {
+        mockMvc.perform(get("/api/access/admin").with(jwt().authorities(() -> "ROLE_ADMIN")))
                 .andExpect(status().isOk());
     }
 }

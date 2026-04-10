@@ -30,11 +30,11 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.GET, "/api/ping", "/helloGuest").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/ping", "/api/access/public").permitAll()
                         .requestMatchers("/actuator/health", "/actuator/health/**").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                        .requestMatchers("/helloAdmin").hasRole("ADMIN")
-                        .requestMatchers("/helloUser").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers("/api/access/admin").hasRole("ADMIN")
+                        .requestMatchers("/api/access/user").hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exceptions -> exceptions
