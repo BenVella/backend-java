@@ -6,6 +6,7 @@ This repository stays intentionally small and favors platform basics over premat
 - deterministic Maven builds
 - PR-based CI validation
 - stateless OAuth2 resource-server security with Keycloak
+- PostgreSQL persistence with Flyway migrations and Spring JDBC
 - role-based access control backed by JWT claims
 - local operability with a minimal auth stack
 - health probes and JSON auth failure responses
@@ -15,7 +16,10 @@ This repository stays intentionally small and favors platform basics over premat
 - Java 21
 - Spring Boot 3.4
 - Maven 3.9.14
+- PostgreSQL
+- Flyway
 - Spring Security OAuth2 Resource Server
+- Spring JDBC / `JdbcClient`
 - Keycloak
 - Springdoc / OpenAPI runtime docs
 - Docker Compose
@@ -28,10 +32,10 @@ Implemented today:
 - JWT validation with issuer, audience, and authorized-party checks
 - Maven wrapper build and PR workflow validation
 - published OpenAPI contract via `/v3/api-docs` and Swagger UI
+- PostgreSQL wiring with SQL migrations and a `JdbcClient` repository baseline
 
 Not yet implemented:
 - game-domain modules
-- persistence and migration tooling
 - realtime transport systems
 - deployment automation
 
@@ -55,6 +59,7 @@ Not yet implemented:
 ```
 
 GitHub Actions runs the Maven build and test workflow for pull requests.
+Database-backed integration tests use Testcontainers and require a usable Docker environment.
 
 ### Local Infrastructure
 
@@ -64,6 +69,7 @@ docker compose up -d --build
 
 The local stack includes:
 - the API on `http://localhost:8080`
+- PostgreSQL on `localhost:5432`
 - Keycloak on `http://localhost:8090`
 
 ## API and Operational Endpoints

@@ -24,7 +24,7 @@ Completed:
 ## Phase 3: Game Platform Modules
 
 Next:
-- add persistence and migration tooling
+- expand persistence beyond the current PostgreSQL baseline
 - define core game-service contracts
 - introduce realtime transport boundaries
 - add asynchronous flows only where justified

@@ -1,11 +1,19 @@
 spring:
   application:
     name: game-backend
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/game_backend}
+    username: ${SPRING_DATASOURCE_USERNAME:game_backend}
+    password: ${SPRING_DATASOURCE_PASSWORD:game_backend}
+    hikari:
+      pool-name: game-backend-pool
   security:
     oauth2:
       resourceserver:
         jwt:
           issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8090/realms/backend-java}
+  flyway:
+    locations: classpath:db/migration
 
 management:
   endpoints:

@@ -7,7 +7,7 @@
 - Agent-enable project workflows
 
 ## Platform
-- Postgres schema and persistence
+- [x] Postgres schema and JdbcClient persistence baseline
 - External OAuth/OpenID support
 - Wire GitHub Actions secrets into delivery workflows
 - Async leaderboard support
