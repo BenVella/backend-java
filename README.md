@@ -45,6 +45,7 @@ This repository stays intentionally small and favors platform basics over premat
 - PR-based CI validation
 - stateless OAuth2 resource-server security with Keycloak
 - PostgreSQL persistence with Flyway migrations and Spring JDBC
+- first local-dev gameplay session + authoritative movement slice
 - role-based access control backed by JWT claims
 - local operability with a minimal auth stack
 - health probes and JSON auth failure responses
@@ -71,10 +72,14 @@ Implemented today:
 - Maven wrapper build and PR workflow validation
 - published OpenAPI contract via `/v3/api-docs` and Swagger UI
 - PostgreSQL wiring with SQL migrations and a `JdbcClient` repository baseline
+- authenticated gameplay session issuance for a local realtime boundary
+- in-memory authoritative player movement over raw WebSocket
+- coarse durable player location persistence for reconnect/recovery
 
 Not yet implemented:
-- game-domain modules
-- realtime transport systems
+- combat, inventory, matchmaking, or broader game-domain modules
+- replication beyond the moving player's own authoritative state
+- dedicated realtime service or UDP transport
 - deployment automation
 
 ## Running the Project
@@ -119,6 +124,7 @@ Public endpoints:
 Role-protected endpoints:
 - `GET /api/access/user`
 - `GET /api/access/admin`
+- `POST /api/gameplay/sessions`
 
 Contract endpoints:
 - `GET /v3/api-docs`
@@ -128,6 +134,7 @@ Contract endpoints:
 
 - [docs/wiki/auth.md](docs/wiki/auth.md): application security contract
 - [docs/wiki/auth-keycloak.md](docs/wiki/auth-keycloak.md): local Keycloak flow
+- [docs/wiki/movement.md](docs/wiki/movement.md): first authoritative movement slice
 - [docs/plan.md](docs/plan.md): delivery roadmap
 - [docs/TODO.md](docs/TODO.md): implementation backlog
 - [docs/CHANGELIST.md](docs/CHANGELIST.md): engineering milestones

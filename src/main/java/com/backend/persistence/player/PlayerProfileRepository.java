@@ -19,27 +19,33 @@ public class PlayerProfileRepository {
         this.jdbcClient = jdbcClient;
     }
 
-    public PlayerProfile create(String handle, String displayName) {
+    public PlayerProfile create(String externalSubject, String handle, String displayName) {
         UUID id = UUID.randomUUID();
         OffsetDateTime now = OffsetDateTime.now();
 
         jdbcClient.sql("""
-                insert into player_profile (id, handle, display_name, created_at, updated_at)
-                values (:id, :handle, :displayName, :createdAt, :updatedAt)
+                insert into player_profile (id, external_subject, handle, display_name, created_at, updated_at)
+                values (:id, :externalSubject, :handle, :displayName, :createdAt, :updatedAt)
                 """)
                 .param("id", id)
+                .param("externalSubject", externalSubject)
                 .param("handle", handle)
                 .param("displayName", displayName)
                 .param("createdAt", now)
                 .param("updatedAt", now)
                 .update();
 
-        return new PlayerProfile(id, handle, displayName, now, now);
+        return new PlayerProfile(id, externalSubject, handle, displayName, now, now);
+    }
+
+    public PlayerProfile findOrCreate(String externalSubject, String handle, String displayName) {
+        return findByExternalSubject(externalSubject)
+                .orElseGet(() -> create(externalSubject, handle, displayName));
     }
 
     public Optional<PlayerProfile> findById(UUID id) {
         return jdbcClient.sql("""
-                select id, handle, display_name, created_at, updated_at
+                select id, external_subject, handle, display_name, created_at, updated_at
                 from player_profile
                 where id = :id
                 """)
@@ -48,9 +54,20 @@ public class PlayerProfileRepository {
                 .optional();
     }
 
+    public Optional<PlayerProfile> findByExternalSubject(String externalSubject) {
+        return jdbcClient.sql("""
+                select id, external_subject, handle, display_name, created_at, updated_at
+                from player_profile
+                where external_subject = :externalSubject
+                """)
+                .param("externalSubject", externalSubject)
+                .query(this::mapRow)
+                .optional();
+    }
+
     public Optional<PlayerProfile> findByHandle(String handle) {
         return jdbcClient.sql("""
-                select id, handle, display_name, created_at, updated_at
+                select id, external_subject, handle, display_name, created_at, updated_at
                 from player_profile
                 where handle = :handle
                 """)
@@ -61,7 +78,7 @@ public class PlayerProfileRepository {
 
     public List<PlayerProfile> findAll() {
         return jdbcClient.sql("""
-                select id, handle, display_name, created_at, updated_at
+                select id, external_subject, handle, display_name, created_at, updated_at
                 from player_profile
                 order by created_at asc
                 """)
@@ -79,6 +96,7 @@ public class PlayerProfileRepository {
     private PlayerProfile mapRow(ResultSet rs, int rowNum) throws SQLException {
         return new PlayerProfile(
                 rs.getObject("id", UUID.class),
+                rs.getString("external_subject"),
                 rs.getString("handle"),
                 rs.getString("display_name"),
                 rs.getObject("created_at", OffsetDateTime.class),

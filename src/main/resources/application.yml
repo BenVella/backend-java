@@ -48,3 +48,10 @@ app:
       required-audience: ${KEYCLOAK_REQUIRED_AUDIENCE:game-backend}
       allowed-authorized-parties: ${KEYCLOAK_ALLOWED_AUTHORIZED_PARTIES:game-backend-cli}
       principal-claim: ${KEYCLOAK_PRINCIPAL_CLAIM:preferred_username}
+  gameplay:
+    session:
+      token-ttl: ${GAMEPLAY_SESSION_TOKEN_TTL:PT5M}
+      websocket-path: ${GAMEPLAY_WEBSOCKET_PATH:/ws/gameplay}
+    movement:
+      speed-units-per-second: ${GAMEPLAY_MOVEMENT_SPEED_UNITS_PER_SECOND:4.0}
+      default-zone-id: ${GAMEPLAY_DEFAULT_ZONE_ID:starter-zone}
