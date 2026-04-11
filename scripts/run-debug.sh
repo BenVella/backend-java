@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+KEYCLOAK_DISCOVERY_URL="http://localhost:8090/realms/backend-java/.well-known/openid-configuration"
+
 use_java21_if_available() {
   for candidate in \
     "$HOME/.local/share/mise/installs/java/21.0.2" \
@@ -20,6 +22,28 @@ if [[ "$current_java_version" != *'"21.'* ]] && [[ "$current_java_version" != *'
 fi
 
 docker compose up -d postgres keycloak
-exec ./mvnw spring-boot:run \
-  -Dspring-boot.run.arguments="--debug --logging.level.com.backend=debug --logging.level.org.springframework.security=debug" \
-  -Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
+
+oidc_ready() {
+  if command -v curl >/dev/null 2>&1; then
+    curl -fsS "$KEYCLOAK_DISCOVERY_URL" >/dev/null
+    return $?
+  fi
+  if command -v wget >/dev/null 2>&1; then
+    wget -qO- "$KEYCLOAK_DISCOVERY_URL" >/dev/null
+    return $?
+  fi
+  echo "Neither curl nor wget is available to probe Keycloak readiness." >&2
+  return 1
+}
+
+for _ in $(seq 1 60); do
+  if oidc_ready; then
+    exec ./mvnw spring-boot:run \
+      -Dspring-boot.run.arguments="--debug --logging.level.com.backend=debug --logging.level.org.springframework.security=debug" \
+      -Dspring-boot.run.jvmArguments="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005"
+  fi
+  sleep 2
+done
+
+echo "Keycloak discovery endpoint not ready: $KEYCLOAK_DISCOVERY_URL" >&2
+exit 1

@@ -48,8 +48,13 @@
 - Build: `scripts/build.cmd` or `./scripts/build.sh`
 - Test: `scripts/test.cmd` or `./scripts/test.sh`
 - Full verify: `./mvnw clean verify` or `.\mvnw.cmd -B clean verify`
+- Startup smoke: `./scripts/smoke-startup.sh`
 - Integration tests require Docker.
 
 ## Known Gotchas
 - Testcontainers on this repo is pinned through Surefire system property `api.version=1.44` for Docker Desktop compatibility.
 - Mockito emits a dynamic-agent warning during tests; currently non-blocking.
+
+## Agent Expectations
+- Runtime-affecting changes should preserve the CI startup smoke.
+- If app boot, Docker wiring, auth wiring, or ports change, revalidate healthy startup rather than relying on compile/test only.
