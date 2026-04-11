@@ -1,17 +1,19 @@
 spring:
   application:
-    name: order-taking-api
+    name: game-backend
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/game_backend}
+    username: ${SPRING_DATASOURCE_USERNAME:game_backend}
+    password: ${SPRING_DATASOURCE_PASSWORD:game_backend}
+    hikari:
+      pool-name: game-backend-pool
   security:
     oauth2:
       resourceserver:
         jwt:
           issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8090/realms/backend-java}
-
-  rabbitmq:
-    host: ${RABBITMQ_HOST:localhost}
-    port: ${RABBITMQ_PORT:5672}
-    username: ${RABBITMQ_USERNAME:guest}
-    password: ${RABBITMQ_PASSWORD:guest}
+  flyway:
+    locations: classpath:db/migration
 
 management:
   endpoints:
@@ -42,7 +44,7 @@ logging:
 app:
   security:
     keycloak:
-      client-id: ${KEYCLOAK_CLIENT_ID:order-taking-api}
-      required-audience: ${KEYCLOAK_REQUIRED_AUDIENCE:order-taking-api}
-      allowed-authorized-parties: ${KEYCLOAK_ALLOWED_AUTHORIZED_PARTIES:order-taking-api-cli}
+      client-id: ${KEYCLOAK_CLIENT_ID:game-backend}
+      required-audience: ${KEYCLOAK_REQUIRED_AUDIENCE:game-backend}
+      allowed-authorized-parties: ${KEYCLOAK_ALLOWED_AUTHORIZED_PARTIES:game-backend-cli}
       principal-claim: ${KEYCLOAK_PRINCIPAL_CLAIM:preferred_username}

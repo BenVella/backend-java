@@ -2,7 +2,7 @@
 
 ## Objective
 
-Establish this repository as a production-oriented backend service baseline, then expand the business domain on top of that foundation.
+Keep this repository as a lean backend foundation, then add game-specific modules only when they have clear contracts.
 
 ## Phase 1: Platform Baseline
 
@@ -10,36 +10,28 @@ Completed:
 - Maven migration from Gradle
 - Keycloak-backed stateless resource-server security
 - audience and authorized-party validation
-- local Docker Compose stack for auth and messaging dependencies
+- local Docker Compose auth stack
+- PR CI validation for build and tests
 
-## Phase 2: API Contract and Domain Maturity
+## Phase 2: Foundation Cleanup
+
+Completed:
+- strip prototype-only code paths
+- generalize project naming and configuration
+- keep only neutral access probes and platform primitives
+- publish the baseline OpenAPI contract through runtime docs
+
+## Phase 3: Game Platform Modules
 
 Next:
-- tighten request validation on order endpoints
-- introduce typed response models for order creation and retrieval
-- define a durable order lifecycle and state transitions
-- align the order API to a stable OpenAPI contract
-
-## Phase 3: Persistence and Messaging Reliability
-
-Planned:
-- add a persistence layer for orders
-- introduce migration tooling and local seeded data
-- formalize event payloads and delivery guarantees
-- clarify synchronous API behavior versus asynchronous fulfillment processing
+- expand persistence beyond the current PostgreSQL baseline
+- define core game-service contracts
+- introduce realtime transport boundaries
+- add asynchronous flows only where justified
 
 ## Phase 4: Delivery and Operations
 
 Planned:
-- CI validation for tests and packaging
 - container publishing and deployment automation
 - secret management integration
 - stronger runtime observability and operational documentation
-
-## Guiding Principle
-
-The repository should continue to reflect disciplined engineering tradeoffs:
-- secure defaults first
-- deterministic builds first
-- clear operational behavior first
-- domain complexity layered in after the platform baseline is stable

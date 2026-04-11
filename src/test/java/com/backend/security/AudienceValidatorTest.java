@@ -11,10 +11,10 @@ class AudienceValidatorTest {
 
     @Test
     void acceptsTokenContainingRequiredAudience() {
-        AudienceValidator validator = new AudienceValidator("order-taking-api");
+        AudienceValidator validator = new AudienceValidator("game-backend");
         Jwt jwt = Jwt.withTokenValue("token")
                 .header("alg", "none")
-                .audience(List.of("account", "order-taking-api"))
+                .audience(List.of("account", "game-backend"))
                 .build();
 
         assertThat(validator.validate(jwt).hasErrors()).isFalse();
@@ -22,7 +22,7 @@ class AudienceValidatorTest {
 
     @Test
     void rejectsTokenMissingRequiredAudience() {
-        AudienceValidator validator = new AudienceValidator("order-taking-api");
+        AudienceValidator validator = new AudienceValidator("game-backend");
         Jwt jwt = Jwt.withTokenValue("token")
                 .header("alg", "none")
                 .audience(List.of("account"))

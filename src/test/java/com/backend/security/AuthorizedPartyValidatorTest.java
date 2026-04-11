@@ -11,10 +11,10 @@ class AuthorizedPartyValidatorTest {
 
     @Test
     void acceptsTokenContainingAllowedAuthorizedParty() {
-        AuthorizedPartyValidator validator = new AuthorizedPartyValidator(List.of("order-taking-api-cli"));
+        AuthorizedPartyValidator validator = new AuthorizedPartyValidator(List.of("game-backend-cli"));
         Jwt jwt = Jwt.withTokenValue("token")
                 .header("alg", "none")
-                .claim("azp", "order-taking-api-cli")
+                .claim("azp", "game-backend-cli")
                 .build();
 
         assertThat(validator.validate(jwt).hasErrors()).isFalse();
@@ -22,7 +22,7 @@ class AuthorizedPartyValidatorTest {
 
     @Test
     void rejectsTokenMissingAllowedAuthorizedParty() {
-        AuthorizedPartyValidator validator = new AuthorizedPartyValidator(List.of("order-taking-api-cli"));
+        AuthorizedPartyValidator validator = new AuthorizedPartyValidator(List.of("game-backend-cli"));
         Jwt jwt = Jwt.withTokenValue("token")
                 .header("alg", "none")
                 .claim("azp", "different-client")

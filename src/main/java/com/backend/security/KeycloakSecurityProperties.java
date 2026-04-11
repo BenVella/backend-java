@@ -7,9 +7,9 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "app.security.keycloak")
 public class KeycloakSecurityProperties {
 
-    private String clientId = "order-taking-api";
-    private String requiredAudience = "order-taking-api";
-    private List<String> allowedAuthorizedParties = List.of("order-taking-api-cli");
+    private String clientId = "game-backend";
+    private String requiredAudience = "game-backend";
+    private List<String> allowedAuthorizedParties = List.of("game-backend-cli");
     private String principalClaim = "preferred_username";
 
     public String getClientId() {

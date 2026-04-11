@@ -27,10 +27,17 @@ jobs:
           cache: maven
 
       - name: Ensure Maven wrapper is executable
-        run: chmod +x mvnw
+        run: chmod +x mvnw scripts/*.sh
 
       - name: Build and run tests
         run: ./mvnw -B clean verify
+
+      - name: Startup smoke
+        run: ./scripts/smoke-startup.sh
+
+      - name: Tear down local stack
+        if: always()
+        run: docker compose down -v --remove-orphans
 
       - name: Upload test reports
         if: always()
@@ -40,6 +47,14 @@ jobs:
           path: |
             target/surefire-reports/**
             target/failsafe-reports/**
+          if-no-files-found: ignore
+
+      - name: Upload startup log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: startup-log
+          path: target/app-startup.log
           if-no-files-found: ignore
 
       - name: Upload packaged artifact

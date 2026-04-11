@@ -1,79 +1,85 @@
-# Order Taking API
+# Game Backend Foundation
 
-Production-oriented Spring Boot service baseline for an order intake backend.
+Lean Spring Boot baseline for game-oriented backend services.
 
-This repository focuses on the engineering foundations that matter early in a backend service lifecycle:
+## Local Run
+
+Prerequisites:
+- Java 21
+- Docker Desktop
+
+Start local dependencies:
+
+```shell
+docker compose up -d postgres keycloak
+```
+
+Run the service quietly:
+
+```shell
+./scripts/run.sh
+```
+
+Windows:
+
+```powershell
+.\scripts\run.cmd
+```
+
+Run with debugger support on port `5005`:
+
+```shell
+./scripts/run-debug.sh
+```
+
+Windows:
+
+```powershell
+.\scripts\run-debug.cmd
+```
+
+The API will be available on `http://localhost:8080`.
+
+This repository stays intentionally small and favors platform basics over premature feature work:
 - deterministic Maven builds
+- PR-based CI validation
 - stateless OAuth2 resource-server security with Keycloak
+- PostgreSQL persistence with Flyway migrations and Spring JDBC
 - role-based access control backed by JWT claims
-- local infrastructure wiring for application, identity, and messaging dependencies
-- operational basics such as health probes and structured auth failure responses
-
-The order domain itself is still intentionally lightweight. The current value of the repository is the platform baseline: build reproducibility, security posture, local operability, and a service structure that can be expanded into a fuller order workflow.
+- local operability with a minimal auth stack
+- health probes and JSON auth failure responses
 
 ## Technology Stack
 
 - Java 21
 - Spring Boot 3.4
 - Maven 3.9.14
+- PostgreSQL
+- Flyway
 - Spring Security OAuth2 Resource Server
+- Spring JDBC / `JdbcClient`
 - Keycloak
-- RabbitMQ
 - Springdoc / OpenAPI runtime docs
 - Docker Compose
-
-## Engineering Highlights
-
-- Maven Wrapper based build and packaging flow
-- Stateless JWT validation with issuer, audience, and authorized-party (`azp`) enforcement
-- Keycloak role mapping from both realm and client claims
-- JSON 401 and 403 responses for predictable API failure handling
-- Local Compose topology for application, Keycloak, PostgreSQL, and RabbitMQ
-- Actuator health endpoints enabled for liveness and readiness probing
 
 ## Current Scope
 
 Implemented today:
-- public and secured example endpoints for authentication and authorization verification
-- order API scaffolding under `com.backend.order`
-- local Keycloak realm import for repeatable token-based testing
-- messaging wiring for order-event experimentation via RabbitMQ
+- public and role-protected access probe endpoints
+- local Keycloak realm import for repeatable token testing
+- JWT validation with issuer, audience, and authorized-party checks
+- Maven wrapper build and PR workflow validation
+- published OpenAPI contract via `/v3/api-docs` and Swagger UI
+- PostgreSQL wiring with SQL migrations and a `JdbcClient` repository baseline
 
-Not yet complete:
-- persistent order storage
-- mature order lifecycle and business rules
-- contract-first OpenAPI generation pipeline
+Not yet implemented:
+- game-domain modules
+- realtime transport systems
 - deployment automation
-
-That boundary is intentional. The repository already demonstrates a production-ready security and build baseline, while leaving room to extend the business domain in subsequent iterations.
-
-## Security Model
-
-Authentication is standardized on Keycloak-backed bearer tokens.
-
-Every accepted token must satisfy:
-- valid signature
-- valid issuer
-- valid timestamps
-- expected audience for this API
-- allowed authorized party (`azp`)
-
-Authorization is enforced through Spring Security roles derived from:
-- `realm_access.roles`
-- `resource_access.{client-id}.roles`
-
-See [auth.md](docs/wiki/auth.md) for the application-level security contract and [auth-keycloak.md](docs/wiki/auth-keycloak.md) for Keycloak setup and token flow.
 
 ## Running the Project
 
-### Prerequisites
-
-- Java 21
-- Docker Desktop
-
 ### Build
-
-Package build:
 
 ```shell
 ./scripts/build.sh
@@ -81,17 +87,14 @@ Package build:
 
 ### Test
 
-Test run:
-
 ```shell
 ./scripts/test.sh
 ```
 
-GitHub Actions also runs the Maven build and test workflow automatically for pull requests.
+GitHub Actions runs the Maven build and test workflow for pull requests.
+Database-backed integration tests use Testcontainers and require a usable Docker environment.
 
 ### Local Infrastructure
-
-Bring up the local stack:
 
 ```shell
 docker compose up -d --build
@@ -99,43 +102,33 @@ docker compose up -d --build
 
 The local stack includes:
 - the API on `http://localhost:8080`
+- PostgreSQL on `localhost:5432`
 - Keycloak on `http://localhost:8090`
-- RabbitMQ Management UI on `http://localhost:15672`
-
-Note: Docker Desktop must be running before `docker compose up`.
 
 ## API and Operational Endpoints
 
 Public endpoints:
 - `GET /api/ping`
-- `GET /helloGuest`
+- `GET /api/access/public`
 - `GET /actuator/health`
 - `GET /actuator/health/liveness`
 - `GET /actuator/health/readiness`
 - `GET /v3/api-docs`
 - `GET /swagger-ui/index.html`
 
-Secured endpoints:
-- `GET /helloUser`
-- `GET /helloAdmin`
-- `POST /api/orders`
-- `GET /api/orders/{orderId}`
+Role-protected endpoints:
+- `GET /api/access/user`
+- `GET /api/access/admin`
+
+Contract endpoints:
+- `GET /v3/api-docs`
+- `GET /swagger-ui/index.html`
 
 ## Documentation Map
 
 - [docs/wiki/auth.md](docs/wiki/auth.md): application security contract
-- [docs/wiki/auth-keycloak.md](docs/wiki/auth-keycloak.md): Keycloak realm, clients, and token flow
+- [docs/wiki/auth-keycloak.md](docs/wiki/auth-keycloak.md): local Keycloak flow
 - [docs/plan.md](docs/plan.md): delivery roadmap
 - [docs/TODO.md](docs/TODO.md): implementation backlog
 - [docs/CHANGELIST.md](docs/CHANGELIST.md): engineering milestones
 - [docs/PROTOTYPE_REVIEW.md](docs/PROTOTYPE_REVIEW.md): current implementation assessment
-
-## Portfolio Positioning
-
-This repository is strongest as a demonstration of backend platform engineering judgment:
-- secure-by-default API integration with an external identity provider
-- deterministic local build execution
-- practical local infrastructure orchestration
-- clear separation between production-oriented foundations and incomplete business-domain work
-
-That distinction matters. Mature engineering is not just about shipping features; it is also about establishing build, security, and operational constraints that let a service scale safely.
