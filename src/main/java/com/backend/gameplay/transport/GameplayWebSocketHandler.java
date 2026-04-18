@@ -74,12 +74,14 @@ public class GameplayWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
-        gameplaySessionId(session).ifPresent(gameplaySessionCoordinator::closeSession);
+        gameplaySessionId(session).ifPresent(sessionId ->
+                gameplaySessionCoordinator.closeConnection(sessionId, session.getId()));
     }
 
     @Override
     public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
-        gameplaySessionId(session).ifPresent(gameplaySessionCoordinator::closeSession);
+        gameplaySessionId(session).ifPresent(sessionId ->
+                gameplaySessionCoordinator.closeConnection(sessionId, session.getId()));
         if (session.isOpen()) {
             session.close(CloseStatus.SERVER_ERROR);
         }

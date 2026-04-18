@@ -39,8 +39,24 @@ public class PlayerProfileRepository {
     }
 
     public PlayerProfile findOrCreate(String externalSubject, String handle, String displayName) {
-        return findByExternalSubject(externalSubject)
-                .orElseGet(() -> create(externalSubject, handle, displayName));
+        UUID id = UUID.randomUUID();
+        OffsetDateTime now = OffsetDateTime.now();
+
+        return jdbcClient.sql("""
+                insert into player_profile (id, external_subject, handle, display_name, created_at, updated_at)
+                values (:id, :externalSubject, :handle, :displayName, :createdAt, :updatedAt)
+                on conflict (external_subject) do update
+                set external_subject = excluded.external_subject
+                returning id, external_subject, handle, display_name, created_at, updated_at
+                """)
+                .param("id", id)
+                .param("externalSubject", externalSubject)
+                .param("handle", handle)
+                .param("displayName", displayName)
+                .param("createdAt", now)
+                .param("updatedAt", now)
+                .query(this::mapRow)
+                .single();
     }
 
     public Optional<PlayerProfile> findById(UUID id) {

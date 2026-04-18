@@ -10,6 +10,11 @@ import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import java.util.Optional;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -48,5 +53,32 @@ class PlayerProfileRepositoryIntegrationTest extends PostgresIntegrationTestSupp
                 .singleElement()
                 .extracting(PlayerProfile::id, PlayerProfile::externalSubject, PlayerProfile::handle, PlayerProfile::displayName)
                 .containsExactly(created.id(), created.externalSubject(), created.handle(), created.displayName());
+    }
+
+    @Test
+    void findsOrCreatesPlayerProfilesAtomicallyForConcurrentRequests() throws Exception {
+        long beforeCount = repository.count();
+
+        try (ExecutorService executor = Executors.newFixedThreadPool(2)) {
+            Callable<PlayerProfile> resolveProfile = () ->
+                    repository.findOrCreate("subject-lux", "lux-main", "Lux Main");
+
+            Future<PlayerProfile> first = executor.submit(resolveProfile);
+            Future<PlayerProfile> second = executor.submit(resolveProfile);
+
+            PlayerProfile firstProfile = get(first);
+            PlayerProfile secondProfile = get(second);
+
+            assertThat(firstProfile.id()).isEqualTo(secondProfile.id());
+            assertThat(firstProfile.externalSubject()).isEqualTo("subject-lux");
+            assertThat(secondProfile.externalSubject()).isEqualTo("subject-lux");
+        }
+
+        assertThat(repository.count()).isEqualTo(beforeCount + 1);
+        assertThat(repository.findByExternalSubject("subject-lux")).isPresent();
+    }
+
+    private PlayerProfile get(Future<PlayerProfile> future) throws ExecutionException, InterruptedException {
+        return future.get();
     }
 }

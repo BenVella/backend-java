@@ -77,6 +77,17 @@ public class GameplaySessionService {
         return Optional.of(stored.toTicket());
     }
 
+    public synchronized Optional<GameplaySessionTicket> closeAttached(UUID sessionId, String connectionId) {
+        StoredGameplaySession stored = sessionsById.get(sessionId);
+        if (stored == null || stored.connectionId == null || !stored.connectionId.equals(connectionId)) {
+            return Optional.empty();
+        }
+
+        sessionsById.remove(sessionId);
+        sessionIdByPlayerId.remove(stored.playerId, sessionId);
+        return Optional.of(stored.toTicket());
+    }
+
     private String generateSessionToken() {
         byte[] bytes = new byte[24];
         secureRandom.nextBytes(bytes);

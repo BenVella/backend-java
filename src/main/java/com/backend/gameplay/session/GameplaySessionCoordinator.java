@@ -95,6 +95,16 @@ public class GameplaySessionCoordinator {
         finalState.ifPresent(this::persistLocation);
     }
 
+    public boolean closeConnection(UUID sessionId, String connectionId) {
+        Optional<GameplaySessionTicket> closedSession = gameplaySessionService.closeAttached(sessionId, connectionId);
+        if (closedSession.isEmpty()) {
+            return false;
+        }
+
+        movementRuntimeService.stopSession(sessionId).ifPresent(this::persistLocation);
+        return true;
+    }
+
     private void closeExistingSession(UUID playerId) {
         gameplaySessionService.findActiveSessionId(playerId).ifPresent(this::closeSession);
     }
