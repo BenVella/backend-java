@@ -5,6 +5,7 @@ import java.util.UUID;
 
 public record PlayerProfile(
         UUID id,
+        String externalSubject,
         String handle,
         String displayName,
         OffsetDateTime createdAt,

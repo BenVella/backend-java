@@ -33,6 +33,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/api/ping", "/api/access/public").permitAll()
                         .requestMatchers("/actuator/health", "/actuator/health/**").permitAll()
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                        .requestMatchers("/ws/**").permitAll()
                         .requestMatchers("/api/access/admin").hasRole("ADMIN")
                         .requestMatchers("/api/access/user").hasAnyRole("USER", "ADMIN")
                         .anyRequest().authenticated()
